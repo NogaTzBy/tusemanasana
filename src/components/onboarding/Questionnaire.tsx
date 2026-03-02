@@ -121,7 +121,9 @@ export default function Questionnaire() {
 
     const finishOnboarding = () => {
         setIsProcessing(true);
-        // TODO: Guardar contexto temporalmente (localStorage/zustand) e ir a Resumen
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('tu_semana_sana_respuestas', JSON.stringify(answers));
+        }
         setTimeout(() => {
             window.location.href = "/onboarding/resumen";
         }, 1500);

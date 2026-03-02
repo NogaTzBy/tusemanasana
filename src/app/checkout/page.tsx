@@ -6,6 +6,39 @@ import { ArrowLeft, CheckCircle2, Lock } from "lucide-react";
 
 export default function CheckoutPage() {
     const [plan, setPlan] = useState<"mensual" | "anual">("anual");
+    const [email, setEmail] = useState("");
+    const [nombre, setNombre] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleCheckout = (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        if (typeof window !== 'undefined') {
+            // Guardar plan, correo y nombre temporalmente para pre-llenar el registro al volver
+            const checkoutData = { plan, email, nombre };
+            localStorage.setItem('tu_semana_sana_checkout', JSON.stringify(checkoutData));
+
+            // Recolectamos variables de entorno (Asegúrate de llenar esto en .env.local)
+            const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || 'tu-tienda.myshopify.com';
+            const variantId = process.env.NEXT_PUBLIC_SHOPIFY_VARIANT_ID || '1234567890';
+            const sellingPlanId = plan === 'anual'
+                ? process.env.NEXT_PUBLIC_SHOPIFY_SELLING_PLAN_ID_ANUAL || '987654321'
+                : process.env.NEXT_PUBLIC_SHOPIFY_SELLING_PLAN_ID_MENSUAL || '123456789';
+
+            // Link directo (Permalink) al Checkout de Shopify (Esto evita rebotes a la página de inicio)
+            // Formato: https://mitienda.com/cart/variante_id:cantidad?selling_plan=plan_id
+            let shopifyCheckoutUrl = `https://${storeDomain}/cart/${variantId}:1?selling_plan=${sellingPlanId}`;
+
+            // Agregamos el email para que ya aparezca completado
+            if (email) {
+                shopifyCheckoutUrl += `&checkout[email]=${encodeURIComponent(email)}`;
+            }
+
+            // Redirigir al usuario al entorno de Shopify seguro
+            window.location.href = shopifyCheckoutUrl;
+        }
+    }
 
     return (
         <main className="min-h-screen bg-[var(--color-background)]">
@@ -33,8 +66,8 @@ export default function CheckoutPage() {
                         <div
                             onClick={() => setPlan("anual")}
                             className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all ${plan === "anual"
-                                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
-                                    : "border-gray-200 bg-white hover:border-[var(--color-primary)]/40"
+                                ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
+                                : "border-gray-200 bg-white hover:border-[var(--color-primary)]/40"
                                 }`}
                         >
                             {plan === "anual" && (
@@ -57,8 +90,8 @@ export default function CheckoutPage() {
                         <div
                             onClick={() => setPlan("mensual")}
                             className={`p-5 rounded-2xl border-2 cursor-pointer transition-all ${plan === "mensual"
-                                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
-                                    : "border-gray-200 bg-white hover:border-[var(--color-primary)]/40"
+                                ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
+                                : "border-gray-200 bg-white hover:border-[var(--color-primary)]/40"
                                 }`}
                         >
                             <div className="flex justify-between items-center mb-1">
@@ -84,43 +117,45 @@ export default function CheckoutPage() {
                     </div>
                 </div>
 
-                {/* Lado derecho: Checkout form (Mock) */}
-                <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
+                {/* Lado derecho: Formulario Inicial de Contacto para pasar a Shopify */}
+                <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 relative">
+                    {isSubmitting && (
+                        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-3xl">
+                            <div className="w-10 h-10 border-4 border-[var(--color-primary)]/30 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
+                            <p className="font-medium text-[var(--color-foreground)] animate-pulse text-center px-4">Conectando de forma segura con Shopify Stripe...</p>
+                        </div>
+                    )}
                     <h2 className="text-lg font-semibold mb-6 flex items-center">
-                        <Lock className="w-4 h-4 mr-2 text-gray-400" /> Detalles de pago seguro
+                        <Lock className="w-4 h-4 mr-2 text-gray-400" /> Checkout seguro
                     </h2>
 
-                    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); window.location.href = '/dashboard'; }}>
+                    <p className="text-sm text-[var(--color-foreground)]/70 mb-6">
+                        Para enviarte tu recibo, déjanos tu correo. Serás redirigido a la pasarela de pagos oficial.
+                    </p>
+
+                    <form className="space-y-4" onSubmit={handleCheckout}>
                         <div>
-                            <label className="block text-sm font-medium text-[var(--color-foreground)]/80 mb-1">Email</label>
-                            <input type="email" required placeholder="maria@ejemplo.com" className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]" />
+                            <label className="block text-sm font-medium text-[var(--color-foreground)]/80 mb-1">Nombre completo</label>
+                            <input
+                                type="text"
+                                required
+                                value={nombre}
+                                onChange={(e) => setNombre(e.target.value)}
+                                placeholder="María Pérez"
+                                className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]"
+                            />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-[var(--color-foreground)]/80 mb-1">Nombre en la tarjeta</label>
-                            <input type="text" required placeholder="María Pérez" className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]" />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-[var(--color-foreground)]/80 mb-1">Número de tarjeta</label>
-                            <div className="relative">
-                                <input type="text" required placeholder="0000 0000 0000 0000" className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] font-mono text-sm" />
-                                <div className="absolute right-3 top-3 flex space-x-1">
-                                    <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                                    <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-[var(--color-foreground)]/80 mb-1">Vencimiento</label>
-                                <input type="text" required placeholder="MM/AA" className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-[var(--color-foreground)]/80 mb-1">CVC</label>
-                                <input type="text" required placeholder="123" className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]" />
-                            </div>
+                            <label className="block text-sm font-medium text-[var(--color-foreground)]/80 mb-1">Email principal</label>
+                            <input
+                                type="email"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="maria@ejemplo.com"
+                                className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]"
+                            />
                         </div>
 
                         <div className="pt-4 border-t border-gray-100 mt-6">
@@ -131,9 +166,10 @@ export default function CheckoutPage() {
 
                             <button
                                 type="submit"
-                                className="w-full py-4 text-white bg-black rounded-xl font-medium shadow hover:bg-gray-800 transition-colors"
+                                className="w-full py-4 text-white bg-black rounded-xl font-medium shadow hover:bg-gray-800 transition-colors disabled:opacity-50"
+                                disabled={isSubmitting}
                             >
-                                Comenzar mis 3 días gratis
+                                Ir a Pagar <ArrowLeft className="w-4 h-4 inline ml-2 rotate-180" />
                             </button>
                         </div>
                     </form>
