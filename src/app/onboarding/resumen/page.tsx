@@ -34,7 +34,7 @@ export default function ResumenPage() {
                         <div className="w-full text-left bg-[var(--color-background)] rounded-2xl p-6 mb-8">
                             <h3 className="font-semibold text-[var(--color-foreground)] mb-4 flex items-center">
                                 <CheckCircle2 className="w-5 h-5 text-[var(--color-primary)] mr-2" />
-                                ¿Qué incluye tu suscripción?
+                                ¿Qué incluye tu acceso de por vida?
                             </h3>
                             <ul className="space-y-3 text-[var(--color-foreground)]/80">
                                 <li className="flex items-start">
@@ -56,10 +56,10 @@ export default function ResumenPage() {
                             href="/checkout"
                             className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-[var(--color-accent)] rounded-full shadow-lg hover:bg-[var(--color-accent-dark)] transition-transform hover:scale-105 active:scale-95"
                         >
-                            Probá 3 días gratis <ChevronRight className="ml-2 w-5 h-5" />
+                            Obtener acceso · $19.900 ARS <ChevronRight className="ml-2 w-5 h-5" />
                         </Link>
                         <p className="text-sm text-[var(--color-foreground)]/50 mt-4">
-                            Cancela cuando quieras. Te avisaremos antes de cobrar.
+                            Pago único · Sin suscripción · Tuya para siempre
                         </p>
                     </div>
                 </div>
