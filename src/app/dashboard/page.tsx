@@ -4,6 +4,8 @@ import DashboardClient from '@/components/dashboard/DashboardClient'
 import SuscripcionInactiva from '@/components/ui/SuscripcionInactiva'
 import BottomNav from '@/components/ui/BottomNav'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   // ── Obtener perfil del usuario autenticado ─────────────────
   const usuario = await getPerfilUsuario()
