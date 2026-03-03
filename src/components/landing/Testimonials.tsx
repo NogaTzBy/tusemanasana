@@ -27,7 +27,7 @@ export default function Testimonials() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {testimonials.map((testimonio, i) => (
                         <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-[var(--color-background)] relative">
-                            <div className="text-[var(--color-accent)] text-4xl font-serif absolute top-4 left-6 italic opacity-50">"</div>
+                            <div className="text-[var(--color-accent)] text-4xl font-serif absolute top-4 left-6 italic opacity-50">&ldquo;</div>
                             <p className="text-[var(--color-foreground)] relative z-10 pt-4 mb-6 italic">
                                 {testimonio.quote}
                             </p>

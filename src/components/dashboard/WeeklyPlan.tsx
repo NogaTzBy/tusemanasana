@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Download, RefreshCw, ShoppingCart, CalendarDays } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 type Meal = {
     id: string;

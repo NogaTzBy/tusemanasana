@@ -17,7 +17,7 @@ export default function RecipeSample() {
                     {/* Muestra visual sin usar importaciones reales aún */}
                     <div className="md:w-1/2 bg-[var(--color-primary)]/10 min-h-[300px] flex items-center justify-center p-8">
                         <div className="text-[var(--color-primary-dark)] font-serif italic text-2xl text-center">
-                            "En tu plataforma verás fotos hermosas y reales de cada plato."
+                            &ldquo;En tu plataforma verás fotos hermosas y reales de cada plato.&rdquo;
                         </div>
                     </div>
 
