@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { updateSession } from '@/lib/supabase/middleware'
+import { updateSession } from '@/lib/supabase/session'
 
 // Rutas públicas que nunca deben ser protegidas
 const PUBLIC_PATHS = ['/', '/login', '/registro', '/checkout', '/onboarding', '/api']
