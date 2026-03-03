@@ -7,6 +7,7 @@ import { signUpAction } from '@/app/actions/auth'
 export function RegistroForm({ message }: { message?: string }) {
     const [email, setEmail] = useState('')
     const [nombre, setNombre] = useState('')
+    const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
         const stored = localStorage.getItem('tu_semana_sana_checkout')
@@ -19,7 +20,12 @@ export function RegistroForm({ message }: { message?: string }) {
                 console.error("Error parseando checkout data", e)
             }
         }
+        setLoaded(true)
     }, [])
+
+    const tieneDatosCheckout = loaded && !!(email && nombre)
+
+    if (!loaded) return null
 
     return (
         <form className="space-y-6" action={signUpAction}>
@@ -31,44 +37,60 @@ export function RegistroForm({ message }: { message?: string }) {
                 </div>
             )}
 
-            <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-[var(--color-foreground)]">
-                    Nombre
-                </label>
-                <div className="mt-1">
-                    <input
-                        id="fullName"
-                        name="fullName"
-                        type="text"
-                        required
-                        readOnly={!!nombre}
-                        value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
-                        className={`appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] sm:text-sm transition-colors ${nombre ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : ''}`}
-                        placeholder="María García"
-                    />
-                </div>
-            </div>
+            {tieneDatosCheckout ? (
+                <>
+                    {/* Datos del checkout ya conocidos: solo mostramos el email como referencia */}
+                    <input type="hidden" name="fullName" value={nombre} />
+                    <input type="hidden" name="email" value={email} />
+                    <div>
+                        <label className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
+                            Email
+                        </label>
+                        <div className="px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 sm:text-sm">
+                            {email}
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <div>
+                        <label htmlFor="fullName" className="block text-sm font-medium text-[var(--color-foreground)]">
+                            Nombre
+                        </label>
+                        <div className="mt-1">
+                            <input
+                                id="fullName"
+                                name="fullName"
+                                type="text"
+                                required
+                                value={nombre}
+                                onChange={(e) => setNombre(e.target.value)}
+                                className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] sm:text-sm transition-colors"
+                                placeholder="María García"
+                            />
+                        </div>
+                    </div>
 
-            <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[var(--color-foreground)]">
-                    Email
-                </label>
-                <div className="mt-1">
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        required
-                        readOnly={!!email}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className={`appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] sm:text-sm transition-colors ${email ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : ''}`}
-                        placeholder="ejemplo@correo.com"
-                    />
-                </div>
-            </div>
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-[var(--color-foreground)]">
+                            Email
+                        </label>
+                        <div className="mt-1">
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] sm:text-sm transition-colors"
+                                placeholder="ejemplo@correo.com"
+                            />
+                        </div>
+                    </div>
+                </>
+            )}
 
             <div>
                 <label htmlFor="password" className="block text-sm font-medium text-[var(--color-foreground)]">
@@ -93,7 +115,7 @@ export function RegistroForm({ message }: { message?: string }) {
                     type="submit"
                     className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] transition-colors"
                 >
-                    Finalizar y ver mi plan
+                    Activar mi cuenta
                 </button>
             </div>
         </form>

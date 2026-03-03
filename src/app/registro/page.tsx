@@ -15,10 +15,10 @@ export default async function RegistroPage(props: {
                     Volver al inicio
                 </Link>
                 <h2 className="mt-6 text-center text-4xl font-serif text-[var(--color-primary-dark)]">
-                    Crea tu cuenta
+                    ¡Ya casi está!
                 </h2>
                 <p className="mt-2 text-center text-sm text-[var(--color-foreground)]/80">
-                    Crea tu cuenta para empezar tu prueba gratuita
+                    Tu pago fue procesado. Solo falta crear tu contraseña para acceder a tu plan.
                 </p>
             </div>
 

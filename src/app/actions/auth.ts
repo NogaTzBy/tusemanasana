@@ -1,7 +1,16 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
+
+function getAdminClient() {
+    return createAdminClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        { auth: { autoRefreshToken: false, persistSession: false } }
+    )
+}
 
 export async function signUpAction(formData: FormData) {
     const email = (formData.get('email') as string)?.trim() || ''
@@ -23,6 +32,20 @@ export async function signUpAction(formData: FormData) {
     })
 
     if (error) {
+        // Si el webhook ya creó la cuenta, actualizamos la contraseña y hacemos login
+        if (error.message.toLowerCase().includes('already registered') || error.code === 'user_already_exists') {
+            const admin = getAdminClient()
+            const { data: existing } = await admin.auth.admin.listUsers()
+            const existingUser = existing?.users?.find(u => u.email === email)
+            if (existingUser) {
+                await admin.auth.admin.updateUserById(existingUser.id, { password })
+                const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+                if (signInError) {
+                    return redirect('/registro?message=Error al iniciar sesión. Intentá de nuevo.')
+                }
+                return redirect('/dashboard')
+            }
+        }
         return redirect('/registro?message=Hubo un error al crear tu cuenta. ' + error.message)
     }
 
@@ -43,5 +66,5 @@ export async function signUpAction(formData: FormData) {
         }
     }
 
-    return redirect('/checkout')
+    return redirect('/dashboard')
 }

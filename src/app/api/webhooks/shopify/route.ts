@@ -89,7 +89,32 @@ export async function POST(request: NextRequest) {
             .single()
 
         if (fetchError || !usuario) {
-            console.error(`Webhook ${topic}: usuario no encontrado para email ${email}`, fetchError)
+            // Usuario no existe aún (creará cuenta después del pago) → lo creamos nosotros
+            const nombreCliente =
+                ((payload.customer as Record<string, unknown>)?.first_name as string) || ''
+
+            const { data: newAuthUser, error: createError } = await supabase.auth.admin.createUser({
+                email,
+                email_confirm: true,
+                user_metadata: { full_name: nombreCliente },
+            })
+
+            if (createError || !newAuthUser?.user) {
+                console.error(`Webhook ${topic}: error creando usuario para ${email}`, createError)
+                return NextResponse.json({ received: true }, { status: 200 })
+            }
+
+            // El trigger handle_new_user ya insertó la fila en usuarios → actualizamos el estado
+            const finTrial = calcularFinTrial()
+            await supabase
+                .from('usuarios')
+                .update({
+                    estado_suscripcion: 'trial',
+                    fecha_inicio_trial: new Date().toISOString(),
+                    fecha_proximo_cobro: finTrial.toISOString(),
+                })
+                .eq('id', newAuthUser.user.id)
+
             return NextResponse.json({ received: true }, { status: 200 })
         }
 
