@@ -7,6 +7,7 @@ export async function signUpAction(formData: FormData) {
     const email = (formData.get('email') as string)?.trim() || ''
     const password = formData.get('password') as string
     const fullName = (formData.get('fullName') as string)?.trim() || ''
+    const plan = (formData.get('plan') as string)?.trim() || 'mensual'
     const profileDataStr = formData.get('profileData') as string
     const supabase = await createClient()
 
@@ -16,6 +17,7 @@ export async function signUpAction(formData: FormData) {
         options: {
             data: {
                 full_name: fullName,
+                plan,
             }
         },
     })
@@ -41,5 +43,5 @@ export async function signUpAction(formData: FormData) {
         }
     }
 
-    return redirect('/dashboard')
+    return redirect('/checkout')
 }

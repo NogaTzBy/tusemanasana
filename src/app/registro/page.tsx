@@ -18,7 +18,7 @@ export default async function RegistroPage(props: {
                     Crea tu cuenta
                 </h2>
                 <p className="mt-2 text-center text-sm text-[var(--color-foreground)]/80">
-                    Último paso para acceder a tu plan.
+                    Crea tu cuenta para empezar tu prueba gratuita
                 </p>
             </div>
 

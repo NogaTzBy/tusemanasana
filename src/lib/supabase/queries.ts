@@ -1,0 +1,318 @@
+import { createClient } from '@/lib/supabase/server'
+import { Receta, PlanSemanal, Usuario, DiaComidas } from '@/lib/types'
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Retorna el lunes de la semana actual en formato ISO (YYYY-MM-DD).
+ */
+function getLunesSemanaActual(): string {
+  const hoy = new Date()
+  const diaSemana = hoy.getDay() // 0 = domingo, 1 = lunes, …, 6 = sábado
+  const diffLunes = diaSemana === 0 ? -6 : 1 - diaSemana
+  const lunes = new Date(hoy)
+  lunes.setDate(hoy.getDate() + diffLunes)
+  return lunes.toISOString().split('T')[0]
+}
+
+/**
+ * Mezcla un array de forma aleatoria (Fisher-Yates shuffle).
+ */
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Queries públicas
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Obtiene el perfil completo del usuario autenticado desde la tabla `usuarios`.
+ * Retorna null si no hay sesión activa o si ocurre algún error.
+ */
+export async function getPerfilUsuario(): Promise<Usuario | null> {
+  try {
+    const supabase = await createClient()
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      console.error('getPerfilUsuario: sin sesión activa', authError)
+      return null
+    }
+
+    const { data, error } = await supabase
+      .from('usuarios')
+      .select(
+        'id, nombre, email, rol, estado_suscripcion, plan, fecha_inicio_trial, fecha_proximo_cobro'
+      )
+      .eq('id', user.id)
+      .single()
+
+    if (error) {
+      console.error('getPerfilUsuario: error al consultar usuarios', error)
+      return null
+    }
+
+    return data as Usuario
+  } catch (err) {
+    console.error('getPerfilUsuario: excepción inesperada', err)
+    return null
+  }
+}
+
+/**
+ * Obtiene el plan semanal más reciente del usuario.
+ * Si no existe ninguno, crea uno automáticamente.
+ */
+export async function getPlanSemanal(userId: string): Promise<PlanSemanal | null> {
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from('planes_semanales')
+      .select('id, usuario_id, semana_inicio, dias, generado_por_ia')
+      .eq('usuario_id', userId)
+      .order('semana_inicio', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (error) {
+      console.error('getPlanSemanal: error al consultar planes_semanales', error)
+      return null
+    }
+
+    if (data) {
+      return data as PlanSemanal
+    }
+
+    // No existe un plan → crear uno automáticamente
+    return crearPlanSemanal(userId)
+  } catch (err) {
+    console.error('getPlanSemanal: excepción inesperada', err)
+    return null
+  }
+}
+
+/**
+ * Obtiene el detalle completo de una receta por su ID.
+ */
+export async function getRecetaDetalle(recetaId: string): Promise<Receta | null> {
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from('recetas')
+      .select(
+        'id, nombre, descripcion_corta, ingredientes, pasos_preparacion, tiempo_preparacion_min, categoria, tags, foto_url, porciones_base, calorias_aprox'
+      )
+      .eq('id', recetaId)
+      .single()
+
+    if (error) {
+      console.error('getRecetaDetalle: error al consultar recetas', error)
+      return null
+    }
+
+    return data as Receta
+  } catch (err) {
+    console.error('getRecetaDetalle: excepción inesperada', err)
+    return null
+  }
+}
+
+/**
+ * Reemplaza una receta dentro de un plan semanal.
+ *
+ * @param planId        - UUID del plan semanal
+ * @param diaIndex      - Índice del día (0 = lunes, … 6 = domingo)
+ * @param categoria     - 'desayuno' | 'almuerzo' | 'cena'
+ * @param nuevaRecetaId - UUID de la receta de reemplazo
+ */
+export async function updateRecetaPlan(
+  planId: string,
+  diaIndex: number,
+  categoria: string,
+  nuevaRecetaId: string
+): Promise<boolean> {
+  try {
+    const supabase = await createClient()
+
+    // Leer el plan actual
+    const { data: planData, error: fetchError } = await supabase
+      .from('planes_semanales')
+      .select('dias')
+      .eq('id', planId)
+      .single()
+
+    if (fetchError || !planData) {
+      console.error('updateRecetaPlan: no se pudo obtener el plan', fetchError)
+      return false
+    }
+
+    // Obtener la nueva receta completa
+    const nuevaReceta = await getRecetaDetalle(nuevaRecetaId)
+    if (!nuevaReceta) {
+      console.error('updateRecetaPlan: no se encontró la nueva receta', nuevaRecetaId)
+      return false
+    }
+
+    // Mutar el array de días en memoria
+    const dias: DiaComidas[] = planData.dias as DiaComidas[]
+    if (diaIndex < 0 || diaIndex >= dias.length) {
+      console.error('updateRecetaPlan: diaIndex fuera de rango', diaIndex)
+      return false
+    }
+
+    const categoriaValida = categoria as 'desayuno' | 'almuerzo' | 'cena'
+    dias[diaIndex] = {
+      ...dias[diaIndex],
+      [categoriaValida]: nuevaReceta,
+    }
+
+    // Persistir el plan actualizado
+    const { error: updateError } = await supabase
+      .from('planes_semanales')
+      .update({ dias })
+      .eq('id', planId)
+
+    if (updateError) {
+      console.error('updateRecetaPlan: error al actualizar el plan', updateError)
+      return false
+    }
+
+    return true
+  } catch (err) {
+    console.error('updateRecetaPlan: excepción inesperada', err)
+    return false
+  }
+}
+
+/**
+ * Obtiene una receta aleatoria de la misma categoría, excluyendo la actual.
+ * Útil para el flujo de "swap" desde el dashboard.
+ */
+export async function getRecetaAlternativa(
+  categoriaActual: string,
+  recetaExcluirId: string
+): Promise<Receta | null> {
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from('recetas')
+      .select(
+        'id, nombre, descripcion_corta, ingredientes, pasos_preparacion, tiempo_preparacion_min, categoria, tags, foto_url, porciones_base, calorias_aprox'
+      )
+      .eq('categoria', categoriaActual)
+      .neq('id', recetaExcluirId)
+
+    if (error) {
+      console.error('getRecetaAlternativa: error al consultar recetas', error)
+      return null
+    }
+
+    if (!data || data.length === 0) {
+      console.error('getRecetaAlternativa: no hay recetas alternativas para', categoriaActual)
+      return null
+    }
+
+    // Elegir una al azar
+    const recetaAleatoria = data[Math.floor(Math.random() * data.length)]
+    return recetaAleatoria as Receta
+  } catch (err) {
+    console.error('getRecetaAlternativa: excepción inesperada', err)
+    return null
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Creación automática de plan semanal
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Genera y persiste un plan semanal de 7 días para el usuario dado.
+ * Asigna recetas aleatorias por categoría sin repetir dentro de la semana
+ * (siempre que haya suficientes recetas disponibles).
+ */
+export async function crearPlanSemanal(userId: string): Promise<PlanSemanal | null> {
+  try {
+    const supabase = await createClient()
+
+    // Obtener todas las recetas disponibles
+    const { data: todasLasRecetas, error: recetasError } = await supabase
+      .from('recetas')
+      .select(
+        'id, nombre, descripcion_corta, ingredientes, pasos_preparacion, tiempo_preparacion_min, categoria, tags, foto_url, porciones_base, calorias_aprox'
+      )
+
+    if (recetasError || !todasLasRecetas || todasLasRecetas.length === 0) {
+      console.error('crearPlanSemanal: error al obtener recetas', recetasError)
+      return null
+    }
+
+    // Agrupar por categoría y mezclar aleatoriamente
+    const porCategoria: Record<string, Receta[]> = {
+      desayuno: shuffle(
+        todasLasRecetas.filter((r) => r.categoria === 'desayuno') as Receta[]
+      ),
+      almuerzo: shuffle(
+        todasLasRecetas.filter((r) => r.categoria === 'almuerzo') as Receta[]
+      ),
+      cena: shuffle(
+        todasLasRecetas.filter((r) => r.categoria === 'cena') as Receta[]
+      ),
+    }
+
+    // Índices circulares para cada categoría (evita repetición mientras haya recetas)
+    const indices = { desayuno: 0, almuerzo: 0, cena: 0 }
+
+    const elegirReceta = (cat: 'desayuno' | 'almuerzo' | 'cena'): Receta | null => {
+      const lista = porCategoria[cat]
+      if (!lista || lista.length === 0) return null
+      const receta = lista[indices[cat] % lista.length]
+      indices[cat]++
+      return receta
+    }
+
+    // Construir los 7 días (0 = lunes … 6 = domingo)
+    const dias: DiaComidas[] = Array.from({ length: 7 }, () => ({
+      desayuno: elegirReceta('desayuno'),
+      almuerzo: elegirReceta('almuerzo'),
+      cena: elegirReceta('cena'),
+    }))
+
+    const semanaInicio = getLunesSemanaActual()
+
+    const { data: nuevoPlan, error: insertError } = await supabase
+      .from('planes_semanales')
+      .insert({
+        usuario_id: userId,
+        semana_inicio: semanaInicio,
+        dias,
+        generado_por_ia: true,
+      })
+      .select('id, usuario_id, semana_inicio, dias, generado_por_ia')
+      .single()
+
+    if (insertError || !nuevoPlan) {
+      console.error('crearPlanSemanal: error al insertar plan', insertError)
+      return null
+    }
+
+    return nuevoPlan as PlanSemanal
+  } catch (err) {
+    console.error('crearPlanSemanal: excepción inesperada', err)
+    return null
+  }
+}

@@ -53,7 +53,7 @@ export default function ResumenPage() {
                         </div>
 
                         <Link
-                            href="/checkout"
+                            href="/registro"
                             className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-[var(--color-accent)] rounded-full shadow-lg hover:bg-[var(--color-accent-dark)] transition-transform hover:scale-105 active:scale-95"
                         >
                             Probá 3 días gratis <ChevronRight className="ml-2 w-5 h-5" />
