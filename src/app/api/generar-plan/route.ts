@@ -12,10 +12,16 @@ export async function POST() {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 
-  const plan = await crearPlanSemanal(user.id)
+  let plan = null
+  let errorDetalle = ''
+  try {
+    plan = await crearPlanSemanal(user.id)
+  } catch (e) {
+    errorDetalle = e instanceof Error ? e.message : String(e)
+  }
 
   if (!plan) {
-    return NextResponse.json({ error: 'No se pudo generar el plan' }, { status: 500 })
+    return NextResponse.json({ error: 'No se pudo generar el plan', detalle: errorDetalle }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })

@@ -7,16 +7,23 @@ export default function GenerandoPlan() {
   const router = useRouter()
   const [error, setError] = useState(false)
 
+  const [errorDetalle, setErrorDetalle] = useState('')
+
   useEffect(() => {
     fetch('/api/generar-plan', { method: 'POST' })
-      .then((res) => {
+      .then(async (res) => {
         if (res.ok) {
           router.refresh()
         } else {
+          const data = await res.json().catch(() => ({}))
+          setErrorDetalle(data?.detalle || data?.error || `HTTP ${res.status}`)
           setError(true)
         }
       })
-      .catch(() => setError(true))
+      .catch((e) => {
+        setErrorDetalle(String(e))
+        setError(true)
+      })
   }, [router])
 
   if (error) {
@@ -26,9 +33,12 @@ export default function GenerandoPlan() {
         <h1 className="font-serif text-2xl text-gray-900 dark:text-gray-100 mb-3">
           No se pudo generar el plan
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 max-w-sm mb-6">
-          Hubo un error al conectar con la IA. Recargá la página para intentar de nuevo.
+        <p className="text-gray-500 dark:text-gray-400 max-w-sm mb-2">
+          Hubo un error al conectar con la IA.
         </p>
+        {errorDetalle && (
+          <p className="text-xs text-gray-400 max-w-sm mb-4 font-mono break-all">{errorDetalle}</p>
+        )}
         <button
           onClick={() => router.refresh()}
           className="bg-terracotta text-white px-6 py-3 rounded-xl font-medium"
