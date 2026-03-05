@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Newsreader } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import type { ReactNode } from "react";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,13 +24,15 @@ export const metadata: Metadata = {
   description: "Descubre tu plan semanal personalizado para comer sano sin complicarte.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" className={`${inter.variable} ${newsreader.variable}`}>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+        />
+      </head>
       <body className="font-sans antialiased text-foreground bg-background">
         <Script
           id="meta-pixel"

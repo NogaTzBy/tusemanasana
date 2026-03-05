@@ -5,14 +5,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'moomlaggpaqzzyagtvkk.supabase.co',
-        pathname: '/storage/v1/object/public/**',
-      },
-      // Permitir otras fuentes de imágenes comunes para recetas
-      {
-        protocol: 'https',
         hostname: '**.supabase.co',
         pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
     ],
   },
