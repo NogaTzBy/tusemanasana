@@ -34,9 +34,9 @@ const FOTOS: Record<string, string[]> = {
 export async function generarPlanConGemini(
   perfil: PerfilNutricional | null
 ): Promise<DiaComidas[] | null> {
-  const apiKey = process.env.GROQ_API_KEY
+  const apiKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY
   if (!apiKey) {
-    throw new Error('GROQ_API_KEY no configurada')
+    throw new Error('GROQ_API_KEY no configurada en Vercel')
   }
 
   const groq = new Groq({ apiKey })
