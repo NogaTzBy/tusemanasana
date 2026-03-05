@@ -271,6 +271,6 @@ export async function crearPlanSemanal(userId: string): Promise<PlanSemanal | nu
     return nuevoPlan as PlanSemanal
   } catch (err) {
     console.error('crearPlanSemanal: excepción inesperada', err)
-    return null
+    throw err
   }
 }
