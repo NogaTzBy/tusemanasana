@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getPerfilUsuario, getPlanSemanal } from '@/lib/supabase/queries'
 import DashboardClient from '@/components/dashboard/DashboardClient'
-import SuscripcionInactiva from '@/components/ui/SuscripcionInactiva'
 import BottomNav from '@/components/ui/BottomNav'
 
 export const dynamic = 'force-dynamic'
@@ -12,20 +11,6 @@ export default async function DashboardPage() {
 
   if (!usuario) {
     redirect('/login')
-  }
-
-  // ── Verificar estado de suscripción ───────────────────────
-  const suscripcionValida =
-    usuario.estado_suscripcion === 'trial' ||
-    usuario.estado_suscripcion === 'activa'
-
-  if (!suscripcionValida) {
-    return (
-      <>
-        <SuscripcionInactiva />
-        <BottomNav />
-      </>
-    )
   }
 
   // ── Obtener plan semanal (crea uno si no existe) ───────────
