@@ -62,8 +62,8 @@ Reglas:
 - Usá ingredientes fáciles de conseguir en Argentina
 - Los nombres y descripciones en español rioplatense
 - Variedad: no repetir la misma receta en la semana
-- Cada receta debe tener entre 4 y 6 ingredientes con cantidades precisas
-- Cada receta debe tener entre 4 y 6 pasos de preparación detallados y útiles (no escribas pasos de una sola palabra, explicá bien cada uno)
+- Cada receta debe tener entre 3 y 5 ingredientes con cantidades precisas
+- Cada receta debe tener exactamente 4 pasos de preparación. Cada paso debe ser una oración completa y descriptiva (mínimo 10 palabras), no una frase corta
 - Las calorías deben ser realistas
 
 Respondé ÚNICAMENTE con JSON puro, sin markdown, sin bloques de código, sin texto adicional:
@@ -93,7 +93,7 @@ El array "dias" debe tener exactamente 7 elementos.`
     model: 'llama-3.3-70b-versatile',
     messages: [{ role: 'user', content: prompt }],
     temperature: 0.7,
-    max_tokens: 8000,
+    max_tokens: 6000,
     response_format: { type: 'json_object' },
   })
 
