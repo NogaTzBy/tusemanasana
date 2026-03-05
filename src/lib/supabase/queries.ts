@@ -93,26 +93,37 @@ export async function getPlanSemanal(userId: string): Promise<PlanSemanal | null
 }
 
 /**
- * Obtiene el detalle completo de una receta por su ID.
+ * Busca una receta por ID dentro del plan semanal del usuario autenticado.
+ * Las recetas generadas por IA se almacenan como JSON en planes_semanales.dias.
  */
 export async function getRecetaDetalle(recetaId: string): Promise<Receta | null> {
   try {
     const supabase = await createClient()
 
-    const { data, error } = await supabase
-      .from('recetas')
-      .select(
-        'id, nombre, descripcion_corta, ingredientes, pasos_preparacion, tiempo_preparacion_min, categoria, tags, foto_url, porciones_base, calorias_aprox'
-      )
-      .eq('id', recetaId)
-      .single()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
 
-    if (error) {
-      console.error('getRecetaDetalle: error al consultar recetas', error)
-      return null
+    const { data: plan } = await supabase
+      .from('planes_semanales')
+      .select('dias')
+      .eq('usuario_id', user.id)
+      .order('semana_inicio', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (!plan?.dias) return null
+
+    const dias = plan.dias as DiaComidas[]
+    for (const dia of dias) {
+      for (const cat of ['desayuno', 'almuerzo', 'cena'] as const) {
+        const receta = dia[cat]
+        if (receta && receta.id === recetaId) {
+          return receta
+        }
+      }
     }
 
-    return data as Receta
+    return null
   } catch (err) {
     console.error('getRecetaDetalle: excepción inesperada', err)
     return null
