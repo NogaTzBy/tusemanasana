@@ -46,7 +46,16 @@ export async function signUpAction(formData: FormData) {
                 return redirect('/dashboard')
             }
         }
-        return redirect('/registro?message=Hubo un error al crear tu cuenta. ' + error.message)
+        const msg = error.message.toLowerCase()
+        let mensajeError = 'Hubo un error al crear tu cuenta. Intentá de nuevo.'
+        if (msg.includes('40 seconds') || msg.includes('security purposes')) {
+            mensajeError = 'Por seguridad, esperá unos segundos antes de intentarlo de nuevo.'
+        } else if (msg.includes('invalid email')) {
+            mensajeError = 'El email ingresado no es válido.'
+        } else if (msg.includes('password')) {
+            mensajeError = 'La contraseña debe tener al menos 6 caracteres.'
+        }
+        return redirect('/registro?message=' + mensajeError)
     }
 
     if (profileDataStr && authData?.user?.id) {

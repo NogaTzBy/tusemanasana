@@ -39,15 +39,21 @@ export function RegistroForm({ message }: { message?: string }) {
 
             {tieneDatosCheckout ? (
                 <>
-                    {/* Datos del checkout ya conocidos: solo mostramos el email como referencia */}
                     <input type="hidden" name="fullName" value={nombre} />
-                    <input type="hidden" name="email" value={email} />
                     <div>
-                        <label className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
+                        <label htmlFor="email" className="block text-sm font-medium text-[var(--color-foreground)]">
                             Email
                         </label>
-                        <div className="px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 sm:text-sm">
-                            {email}
+                        <div className="mt-1">
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] sm:text-sm transition-colors"
+                            />
                         </div>
                     </div>
                 </>
