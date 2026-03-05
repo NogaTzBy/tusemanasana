@@ -62,7 +62,8 @@ Reglas:
 - Usá ingredientes fáciles de conseguir en Argentina
 - Los nombres y descripciones en español rioplatense
 - Variedad: no repetir la misma receta en la semana
-- Cada receta debe tener al menos 3 pasos de preparación
+- Cada receta debe tener MÍNIMO 5 ingredientes con cantidades precisas
+- Cada receta debe tener MÍNIMO 5 pasos de preparación detallados y útiles
 - Las calorías deben ser realistas
 
 Respondé ÚNICAMENTE con JSON puro, sin markdown, sin bloques de código, sin texto adicional:

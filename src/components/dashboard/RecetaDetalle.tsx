@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import type { Receta } from '@/lib/types'
+import { useCompletadas } from '@/lib/useCompletadas'
 
 interface RecetaDetalleProps {
   receta: Receta
@@ -17,16 +18,27 @@ const CATEGORIA_LABELS: Record<string, string> = {
 
 export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
   const router = useRouter()
+  const { toggle, isCompletada, loaded } = useCompletadas()
   const [ingredientesChecked, setIngredientesChecked] = useState<boolean[]>(
     Array(receta.ingredientes.length).fill(false)
   )
-  const [completado, setCompletado] = useState(false)
+
+  const completado = loaded && isCompletada(receta.id)
 
   const toggleIngrediente = (index: number) => {
     setIngredientesChecked((prev) => {
       const next = [...prev]
       next[index] = !next[index]
       return next
+    })
+  }
+
+  const handleCompletado = () => {
+    toggle({
+      id: receta.id,
+      nombre: receta.nombre,
+      categoria: receta.categoria,
+      foto_url: receta.foto_url,
     })
   }
 
@@ -42,11 +54,9 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         <h1 className="text-lg font-serif font-bold text-gray-800 dark:text-gray-100">
-          Receta del Día
+          {CATEGORIA_LABELS[receta.categoria] ?? 'Receta'}
         </h1>
-        <button className="flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-terracotta transition-colors">
-          <span className="material-symbols-outlined">bookmark</span>
-        </button>
+        <div className="w-10" />
       </div>
 
       <main className="pt-20 px-4 max-w-lg mx-auto w-full">
@@ -67,11 +77,12 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
               <span className="material-symbols-outlined text-gray-300 text-[64px]">restaurant</span>
             </div>
           )}
-          <div className="absolute bottom-4 left-4 z-20">
-            <span className="inline-block px-3 py-1 bg-terracotta text-white text-xs font-bold uppercase tracking-wider rounded-full">
-              {CATEGORIA_LABELS[receta.categoria] ?? receta.categoria}
-            </span>
-          </div>
+          {completado && (
+            <div className="absolute top-4 right-4 z-20 bg-sage text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+              <span className="material-symbols-outlined text-[16px]">check_circle</span>
+              Completada
+            </div>
+          )}
         </div>
 
         {/* Título */}
@@ -94,7 +105,9 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
 
         {/* Ingredientes */}
         <div className="mb-8">
-          <h3 className="font-serif text-xl font-bold text-gray-900 dark:text-white mb-4">Ingredientes</h3>
+          <h3 className="font-serif text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Ingredientes <span className="text-sm font-sans font-normal text-gray-400">({receta.ingredientes.length})</span>
+          </h3>
           <div className="space-y-3">
             {receta.ingredientes.map((ing, index) => (
               <label
@@ -117,7 +130,9 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
 
         {/* Instrucciones */}
         <div className="mb-12">
-          <h3 className="font-serif text-xl font-bold text-gray-900 dark:text-white mb-6">Instrucciones</h3>
+          <h3 className="font-serif text-xl font-bold text-gray-900 dark:text-white mb-6">
+            Instrucciones <span className="text-sm font-sans font-normal text-gray-400">({receta.pasos_preparacion.length} pasos)</span>
+          </h3>
           <div className="relative pl-8 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gray-200 dark:before:bg-dark-border">
             {receta.pasos_preparacion.map((paso, index) => (
               <div key={index} className="relative">
@@ -133,7 +148,7 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
         {/* CTA */}
         <div className="sticky bottom-24 w-full">
           <button
-            onClick={() => setCompletado((c) => !c)}
+            onClick={handleCompletado}
             className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2 ${completado ? 'bg-sage text-white' : 'bg-terracotta text-white hover:bg-terracotta-dark'}`}
           >
             <span className="material-symbols-outlined">{completado ? 'check_circle' : 'radio_button_unchecked'}</span>
