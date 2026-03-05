@@ -236,11 +236,53 @@ export async function getRecetaAlternativa(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Plan desde repositorio (tabla recetas)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Arma un plan semanal de 7 días usando recetas existentes en la tabla `recetas`.
+ * Retorna null si no hay suficientes recetas (mínimo 7 por categoría).
+ */
+async function getPlanDesdeRepositorio(
+  perfil: PerfilNutricional | null
+): Promise<DiaComidas[] | null> {
+  const supabase = await createClient()
+  const categorias = ['desayuno', 'almuerzo', 'cena'] as const
+  const seleccionadas: Record<string, Receta[]> = {}
+
+  for (const cat of categorias) {
+    let query = supabase
+      .from('recetas')
+      .select('id, nombre, descripcion_corta, ingredientes, pasos_preparacion, tiempo_preparacion_min, categoria, tags, foto_url, porciones_base, calorias_aprox')
+      .eq('categoria', cat)
+
+    // Filtrar vegetarianas si el perfil lo indica
+    if (perfil?.tipo_alimentacion?.toLowerCase().includes('vegetarian')) {
+      query = query.contains('tags', ['vegetariano'])
+    }
+
+    const { data, error } = await query
+    if (error || !data || data.length < 7) return null
+
+    // Mezclar aleatoriamente y tomar 7
+    const mezcladas = [...data].sort(() => Math.random() - 0.5).slice(0, 7)
+    seleccionadas[cat] = mezcladas as Receta[]
+  }
+
+  return Array.from({ length: 7 }, (_, i) => ({
+    desayuno: seleccionadas.desayuno[i],
+    almuerzo: seleccionadas.almuerzo[i],
+    cena: seleccionadas.cena[i],
+  }))
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Creación automática de plan semanal
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Genera y persiste un plan semanal de 7 días para el usuario dado usando IA (Gemini).
+ * Genera y persiste un plan semanal de 7 días para el usuario.
+ * Usa el repositorio de recetas si hay suficientes, si no genera con IA.
  */
 export async function crearPlanSemanal(userId: string): Promise<PlanSemanal | null> {
   try {
@@ -253,11 +295,21 @@ export async function crearPlanSemanal(userId: string): Promise<PlanSemanal | nu
       .eq('usuario_id', userId)
       .maybeSingle()
 
-    // Generar plan con Gemini
-    const dias = await generarPlanConGemini(perfil as PerfilNutricional | null)
+    const perfilTyped = perfil as PerfilNutricional | null
+
+    // Intentar armar el plan desde el repositorio de recetas (0 tokens de IA)
+    let dias = await getPlanDesdeRepositorio(perfilTyped)
+    let generadoPorIA = false
 
     if (!dias) {
-      console.error('crearPlanSemanal: no se pudo generar el plan con IA')
+      // Fallback: generar con IA si el repositorio está vacío
+      console.log('crearPlanSemanal: repositorio insuficiente, generando con IA...')
+      dias = await generarPlanConGemini(perfilTyped)
+      generadoPorIA = true
+    }
+
+    if (!dias) {
+      console.error('crearPlanSemanal: no se pudo generar el plan')
       return null
     }
 
@@ -269,7 +321,7 @@ export async function crearPlanSemanal(userId: string): Promise<PlanSemanal | nu
         usuario_id: userId,
         semana_inicio: semanaInicio,
         dias,
-        generado_por_ia: true,
+        generado_por_ia: generadoPorIA,
       })
       .select('id, usuario_id, semana_inicio, dias, generado_por_ia')
       .single()
