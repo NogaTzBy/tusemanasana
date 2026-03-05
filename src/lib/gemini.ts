@@ -71,6 +71,7 @@ Respondé ÚNICAMENTE con JSON puro, sin markdown, sin bloques de código, sin t
     {
       "desayuno": {
         "nombre": "string",
+        "foto_keyword": "1-2 palabras en inglés para buscar foto (ej: 'yogurt granola', 'scrambled eggs', 'oatmeal')",
         "descripcion_corta": "string",
         "ingredientes": [{"nombre": "string", "cantidad": 1, "unidad": "string"}],
         "pasos_preparacion": ["paso 1", "paso 2", "paso 3"],
@@ -79,8 +80,8 @@ Respondé ÚNICAMENTE con JSON puro, sin markdown, sin bloques de código, sin t
         "porciones_base": 2,
         "calorias_aprox": 350
       },
-      "almuerzo": { "nombre": "string", "descripcion_corta": "string", "ingredientes": [], "pasos_preparacion": [], "tiempo_preparacion_min": 30, "tags": [], "porciones_base": 2, "calorias_aprox": 500 },
-      "cena": { "nombre": "string", "descripcion_corta": "string", "ingredientes": [], "pasos_preparacion": [], "tiempo_preparacion_min": 30, "tags": [], "porciones_base": 2, "calorias_aprox": 450 }
+      "almuerzo": { "nombre": "string", "foto_keyword": "chicken rice", "descripcion_corta": "string", "ingredientes": [], "pasos_preparacion": [], "tiempo_preparacion_min": 30, "tags": [], "porciones_base": 2, "calorias_aprox": 500 },
+      "cena": { "nombre": "string", "foto_keyword": "beef steak", "descripcion_corta": "string", "ingredientes": [], "pasos_preparacion": [], "tiempo_preparacion_min": 30, "tags": [], "porciones_base": 2, "calorias_aprox": 450 }
     }
   ]
 }
@@ -116,7 +117,7 @@ El array "dias" debe tener exactamente 7 elementos.`
 
   const categorias = ['desayuno', 'almuerzo', 'cena'] as const
 
-  type RecetaRaw = Omit<Receta, 'id' | 'categoria' | 'foto_url'>
+  type RecetaRaw = Omit<Receta, 'id' | 'categoria' | 'foto_url'> & { foto_keyword?: string }
   type RecetaTask = { dayIdx: number; cat: typeof categorias[number]; recetaRaw: RecetaRaw }
 
   const tareas: RecetaTask[] = []
@@ -127,16 +128,20 @@ El array "dias" debe tener exactamente 7 elementos.`
     }
   }
 
-  // Buscar todas las fotos en Pixabay en paralelo
+  // Buscar todas las fotos en Pixabay en paralelo usando foto_keyword en inglés
   const fotos = await Promise.all(
-    tareas.map(({ recetaRaw, cat }) => buscarFotoPixabay(recetaRaw.nombre, cat))
+    tareas.map(({ recetaRaw, cat }) =>
+      buscarFotoPixabay(recetaRaw.foto_keyword || recetaRaw.nombre, cat)
+    )
   )
 
   // Reconstruir días con fotos asignadas
   const diasResult: DiaComidas[] = parsed.dias.map(() => ({ desayuno: null, almuerzo: null, cena: null }))
   tareas.forEach(({ dayIdx, cat, recetaRaw }, idx) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { foto_keyword: _fk, ...recetaSinKeyword } = recetaRaw
     diasResult[dayIdx][cat] = {
-      ...(recetaRaw as Omit<Receta, 'id' | 'categoria' | 'foto_url'>),
+      ...(recetaSinKeyword as Omit<Receta, 'id' | 'categoria' | 'foto_url'>),
       id: crypto.randomUUID(),
       categoria: cat,
       foto_url: fotos[idx],

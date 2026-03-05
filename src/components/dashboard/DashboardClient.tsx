@@ -51,9 +51,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
         <h1 className="font-serif text-2xl font-bold tracking-tight text-center text-gray-900 dark:text-gray-100">
           Tu Semana Sana
         </h1>
-        <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-cream-surface dark:hover:bg-dark-surface transition-colors">
-          <span className="material-symbols-outlined text-gray-900 dark:text-gray-100">menu</span>
-        </button>
+        <div className="w-10" />
       </header>
 
       {/* ── Main ──────────────────────────────────────────────── */}
