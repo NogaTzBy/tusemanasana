@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { Receta, PlanSemanal, Usuario, DiaComidas } from '@/lib/types'
+import { PlanSemanal, Usuario, DiaComidas, Receta, PerfilNutricional } from '@/lib/types'
+import { generarPlanConGemini } from '@/lib/gemini'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -15,18 +16,6 @@ function getLunesSemanaActual(): string {
   const lunes = new Date(hoy)
   lunes.setDate(hoy.getDate() + diffLunes)
   return lunes.toISOString().split('T')[0]
-}
-
-/**
- * Mezcla un array de forma aleatoria (Fisher-Yates shuffle).
- */
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -241,56 +230,26 @@ export async function getRecetaAlternativa(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Genera y persiste un plan semanal de 7 días para el usuario dado.
- * Asigna recetas aleatorias por categoría sin repetir dentro de la semana
- * (siempre que haya suficientes recetas disponibles).
+ * Genera y persiste un plan semanal de 7 días para el usuario dado usando IA (Gemini).
  */
 export async function crearPlanSemanal(userId: string): Promise<PlanSemanal | null> {
   try {
     const supabase = await createClient()
 
-    // Obtener todas las recetas disponibles
-    const { data: todasLasRecetas, error: recetasError } = await supabase
-      .from('recetas')
-      .select(
-        'id, nombre, descripcion_corta, ingredientes, pasos_preparacion, tiempo_preparacion_min, categoria, tags, foto_url, porciones_base, calorias_aprox'
-      )
+    // Obtener perfil nutricional del usuario para personalizar el plan
+    const { data: perfil } = await supabase
+      .from('perfiles_nutricionales')
+      .select('objetivo, tiempo_disponible, tipo_alimentacion, alimentos_excluidos, cantidad_personas, frecuencia_recetas')
+      .eq('usuario_id', userId)
+      .maybeSingle()
 
-    if (recetasError || !todasLasRecetas || todasLasRecetas.length === 0) {
-      console.error('crearPlanSemanal: error al obtener recetas', recetasError)
+    // Generar plan con Gemini
+    const dias = await generarPlanConGemini(perfil as PerfilNutricional | null)
+
+    if (!dias) {
+      console.error('crearPlanSemanal: no se pudo generar el plan con IA')
       return null
     }
-
-    // Agrupar por categoría y mezclar aleatoriamente
-    const porCategoria: Record<string, Receta[]> = {
-      desayuno: shuffle(
-        todasLasRecetas.filter((r) => r.categoria === 'desayuno') as Receta[]
-      ),
-      almuerzo: shuffle(
-        todasLasRecetas.filter((r) => r.categoria === 'almuerzo') as Receta[]
-      ),
-      cena: shuffle(
-        todasLasRecetas.filter((r) => r.categoria === 'cena') as Receta[]
-      ),
-    }
-
-    // Índices circulares para cada categoría (evita repetición mientras haya recetas)
-    const indices = { desayuno: 0, almuerzo: 0, cena: 0 }
-
-    const elegirReceta = (cat: 'desayuno' | 'almuerzo' | 'cena'): Receta | null => {
-      const lista = porCategoria[cat]
-      if (!lista || lista.length === 0) return null
-      const receta = lista[indices[cat] % lista.length]
-      indices[cat]++
-      return receta
-    }
-
-    // Construir los 7 días (0 = lunes … 6 = domingo)
-    const dias: DiaComidas[] = Array.from({ length: 7 }, () => ({
-      desayuno: elegirReceta('desayuno'),
-      almuerzo: elegirReceta('almuerzo'),
-      cena: elegirReceta('cena'),
-    }))
 
     const semanaInicio = getLunesSemanaActual()
 
