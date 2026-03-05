@@ -95,7 +95,13 @@ El array "dias" debe tener exactamente 7 elementos.`
       .replace(/\n?```$/, '')
       .trim()
 
-    const parsed = JSON.parse(text)
+    let parsed
+    try {
+      parsed = JSON.parse(text)
+    } catch {
+      console.error('generarPlanConGemini: JSON inválido:', text.slice(0, 200))
+      throw new Error('Respuesta de Gemini no es JSON válido')
+    }
 
     if (!parsed.dias || !Array.isArray(parsed.dias) || parsed.dias.length !== 7) {
       console.error('generarPlanConGemini: respuesta con formato inválido', parsed)
@@ -123,7 +129,7 @@ El array "dias" debe tener exactamente 7 elementos.`
 
     return dias
   } catch (err) {
-    console.error('generarPlanConGemini: error al generar o parsear', err)
-    return null
+    console.error('generarPlanConGemini: error', err)
+    throw err
   }
 }
