@@ -55,7 +55,8 @@ export async function signUpAction(formData: FormData) {
         } else if (msg.includes('password')) {
             mensajeError = 'La contraseña debe tener al menos 6 caracteres.'
         }
-        return redirect('/registro?message=' + mensajeError)
+        // DEBUG TEMPORAL: mostrar error real
+        return redirect('/registro?message=[DEBUG] ' + error.message + ' | code: ' + (error.code ?? 'none') + ' | status: ' + (error.status ?? 'none'))
     }
 
     if (profileDataStr && authData?.user?.id) {
