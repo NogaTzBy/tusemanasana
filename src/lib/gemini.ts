@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Groq from 'groq-sdk'
 import type { DiaComidas, PerfilNutricional, Receta } from './types'
 
 const FOTOS: Record<string, string[]> = {
@@ -34,14 +34,12 @@ const FOTOS: Record<string, string[]> = {
 export async function generarPlanConGemini(
   perfil: PerfilNutricional | null
 ): Promise<DiaComidas[] | null> {
-  const apiKey = process.env.GEMINI_API_KEY
+  const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
-    console.error('generarPlanConGemini: GEMINI_API_KEY no configurada')
-    return null
+    throw new Error('GROQ_API_KEY no configurada')
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey)
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+  const groq = new Groq({ apiKey })
 
   const perfilDesc = perfil
     ? `- Objetivo: ${perfil.objetivo}
@@ -85,51 +83,51 @@ Respondé ÚNICAMENTE con JSON puro, sin markdown, sin bloques de código, sin t
 
 El array "dias" debe tener exactamente 7 elementos.`
 
+  const completion = await groq.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.7,
+    max_tokens: 4096,
+  })
+
+  const text = (completion.choices[0]?.message?.content ?? '')
+    .trim()
+    .replace(/^```json\n?/, '')
+    .replace(/^```\n?/, '')
+    .replace(/\n?```$/, '')
+    .trim()
+
+  let parsed
   try {
-    const result = await model.generateContent(prompt)
-    const text = result.response
-      .text()
-      .trim()
-      .replace(/^```json\n?/, '')
-      .replace(/^```\n?/, '')
-      .replace(/\n?```$/, '')
-      .trim()
+    parsed = JSON.parse(text)
+  } catch {
+    console.error('generarPlanConGemini: JSON inválido:', text.slice(0, 200))
+    throw new Error('Respuesta de IA no es JSON válido')
+  }
 
-    let parsed
-    try {
-      parsed = JSON.parse(text)
-    } catch {
-      console.error('generarPlanConGemini: JSON inválido:', text.slice(0, 200))
-      throw new Error('Respuesta de Gemini no es JSON válido')
-    }
+  if (!parsed.dias || !Array.isArray(parsed.dias) || parsed.dias.length !== 7) {
+    console.error('generarPlanConGemini: respuesta con formato inválido', parsed)
+    throw new Error('Respuesta de IA con formato inválido')
+  }
 
-    if (!parsed.dias || !Array.isArray(parsed.dias) || parsed.dias.length !== 7) {
-      console.error('generarPlanConGemini: respuesta con formato inválido', parsed)
-      return null
-    }
+  const categorias = ['desayuno', 'almuerzo', 'cena'] as const
 
-    const categorias = ['desayuno', 'almuerzo', 'cena'] as const
-
-    const dias: DiaComidas[] = parsed.dias.map(
-      (dia: Record<string, Omit<Receta, 'id' | 'categoria' | 'foto_url'>>, i: number) => {
-        const diaComidas: DiaComidas = { desayuno: null, almuerzo: null, cena: null }
-        for (const cat of categorias) {
-          if (dia[cat]) {
-            diaComidas[cat] = {
-              ...(dia[cat] as Omit<Receta, 'id' | 'categoria' | 'foto_url'>),
-              id: crypto.randomUUID(),
-              categoria: cat,
-              foto_url: FOTOS[cat][i % FOTOS[cat].length],
-            }
+  const dias: DiaComidas[] = parsed.dias.map(
+    (dia: Record<string, Omit<Receta, 'id' | 'categoria' | 'foto_url'>>, i: number) => {
+      const diaComidas: DiaComidas = { desayuno: null, almuerzo: null, cena: null }
+      for (const cat of categorias) {
+        if (dia[cat]) {
+          diaComidas[cat] = {
+            ...(dia[cat] as Omit<Receta, 'id' | 'categoria' | 'foto_url'>),
+            id: crypto.randomUUID(),
+            categoria: cat,
+            foto_url: FOTOS[cat][i % FOTOS[cat].length],
           }
         }
-        return diaComidas
       }
-    )
+      return diaComidas
+    }
+  )
 
-    return dias
-  } catch (err) {
-    console.error('generarPlanConGemini: error', err)
-    throw err
-  }
+  return dias
 }
