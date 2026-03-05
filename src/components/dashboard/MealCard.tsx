@@ -19,12 +19,6 @@ const CATEGORIA_LABELS: Record<CategoriaComida, string> = {
   cena: 'Cena',
 }
 
-const CATEGORIA_ICONS: Record<CategoriaComida, string> = {
-  desayuno: 'wb_sunny',
-  almuerzo: 'lunch_dining',
-  cena: 'nightlight',
-}
-
 export default function MealCard({ receta, categoria, diaIndex, planId }: MealCardProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -49,20 +43,19 @@ export default function MealCard({ receta, categoria, diaIndex, planId }: MealCa
     }
   }
 
-  /* ── Empty / skeleton state ─────────────────────────────── */
   if (!receta) {
     return (
-      <div className="rounded-2xl overflow-hidden shadow-card bg-white dark:bg-dark-surface border border-gray-100 dark:border-dark-border">
-        <div className="aspect-[4/3] bg-cream-surface dark:bg-dark-border flex items-center justify-center">
+      <div className="bg-white dark:bg-dark-surface rounded-xl overflow-hidden shadow-card border border-gray-100 dark:border-dark-border">
+        <div className="h-48 bg-cream-surface dark:bg-dark-border flex items-center justify-center">
           <span className="material-symbols-outlined text-gray-300 dark:text-gray-600 text-[48px]">
-            {CATEGORIA_ICONS[categoria]}
+            restaurant
           </span>
         </div>
-        <div className="p-4">
-          <span className="inline-block text-xs uppercase tracking-wider font-semibold text-gray-300 dark:text-gray-600 mb-2">
+        <div className="p-5">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-300 dark:text-gray-600">
             {CATEGORIA_LABELS[categoria]}
           </span>
-          <p className="text-gray-400 dark:text-gray-500 text-sm">Sin receta asignada</p>
+          <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Sin receta asignada</p>
         </div>
       </div>
     )
@@ -70,84 +63,64 @@ export default function MealCard({ receta, categoria, diaIndex, planId }: MealCa
 
   return (
     <div
-      className="rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border transition-shadow duration-200 cursor-pointer group"
+      className="bg-white dark:bg-dark-surface rounded-xl overflow-hidden shadow-card group cursor-pointer"
       onClick={handleNavigate}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && handleNavigate()}
       aria-label={`Ver receta: ${receta.nombre}`}
     >
-      {/* ── Imagen con overlay ──────────────────────────────── */}
-      <div className="relative aspect-[4/3] overflow-hidden">
+      {/* Imagen */}
+      <div className="relative h-48 w-full overflow-hidden">
         {receta.foto_url ? (
           <Image
             src={receta.foto_url}
             alt={receta.nombre}
             fill
-            sizes="(max-width: 768px) 100vw, 33vw"
+            sizes="(max-width: 768px) 100vw, 448px"
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full bg-cream-surface dark:bg-dark-border flex items-center justify-center">
             <span className="material-symbols-outlined text-gray-300 dark:text-gray-600 text-[48px]">
-              {CATEGORIA_ICONS[categoria]}
+              restaurant
             </span>
           </div>
         )}
 
-        {/* Gradiente inferior */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-
-        {/* Badge de categoría flotante */}
-        <div className="absolute top-3 left-3">
-          <span className="inline-flex items-center gap-1 bg-white/90 dark:bg-dark-surface/90 backdrop-blur-sm text-gray-700 dark:text-gray-200 text-[11px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full">
-            <span className="material-symbols-outlined text-[14px] text-terracotta">
-              {CATEGORIA_ICONS[categoria]}
-            </span>
+        {/* Badge de categoría */}
+        <div className="absolute top-3 left-3 bg-white/90 dark:bg-dark-surface/90 backdrop-blur-sm px-3 py-1 rounded-full">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
             {CATEGORIA_LABELS[categoria]}
           </span>
         </div>
-
-        {/* Botón Cambiar flotante */}
-        <div className="absolute top-3 right-3">
-          <button
-            onClick={handleCambiarReceta}
-            disabled={isPending}
-            className="flex items-center gap-1 bg-white/90 dark:bg-dark-surface/90 backdrop-blur-sm text-gray-600 dark:text-gray-300 hover:text-terracotta hover:bg-white dark:hover:bg-dark-surface text-[11px] font-semibold px-2.5 py-1 rounded-full transition-all duration-150 disabled:opacity-60"
-            aria-label="Cambiar receta"
-          >
-            <span
-              className={`material-symbols-outlined text-[14px] ${isPending ? 'animate-spin' : ''}`}
-            >
-              {isPending ? 'progress_activity' : 'refresh'}
-            </span>
-            Cambiar
-          </button>
-        </div>
       </div>
 
-      {/* ── Contenido ─────────────────────────────────────────── */}
-      <div className="p-4">
-        {/* Nombre */}
-        <h3 className="font-serif text-base text-gray-900 dark:text-gray-100 leading-snug mb-3 group-hover:text-terracotta transition-colors duration-150 line-clamp-2">
-          {receta.nombre}
-        </h3>
-
-        {/* Fila tiempo + calorías */}
-        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-          <span className="flex items-center gap-1">
-            <span className="material-symbols-outlined text-[16px]">schedule</span>
-            {receta.tiempo_preparacion_min} min
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="material-symbols-outlined text-[16px] text-terracotta">local_fire_department</span>
-            {receta.calorias_aprox} kcal
-          </span>
+      {/* Contenido */}
+      <div className="p-5 flex flex-col gap-3">
+        <div>
+          <h3 className="text-xl font-bold font-serif text-gray-900 dark:text-gray-100 leading-tight">
+            {receta.nombre}
+          </h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            {receta.calorias_aprox} kcal • {receta.tiempo_preparacion_min} min
+          </p>
         </div>
 
-        {/* Error inline */}
+        <button
+          onClick={handleCambiarReceta}
+          disabled={isPending}
+          className="self-start inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 bg-cream-surface dark:bg-dark-border px-3 py-1.5 rounded-full hover:bg-[#e6dcd9] dark:hover:bg-dark-surface transition-colors disabled:opacity-60"
+          aria-label="Cambiar receta"
+        >
+          <span className={`material-symbols-outlined text-[16px] ${isPending ? 'animate-spin' : ''}`}>
+            {isPending ? 'progress_activity' : 'swap_horiz'}
+          </span>
+          Cambiar receta
+        </button>
+
         {error && (
-          <p className="mt-2 text-xs text-red-500 dark:text-red-400">{error}</p>
+          <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
         )}
       </div>
     </div>
