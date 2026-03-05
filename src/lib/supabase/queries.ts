@@ -85,8 +85,7 @@ export async function getPlanSemanal(userId: string): Promise<PlanSemanal | null
       return data as PlanSemanal
     }
 
-    // No existe un plan → crear uno automáticamente
-    return crearPlanSemanal(userId)
+    return null
   } catch (err) {
     console.error('getPlanSemanal: excepción inesperada', err)
     return null
