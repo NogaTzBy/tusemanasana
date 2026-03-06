@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import type { PlanSemanal, Usuario } from '@/lib/types'
 import MealCard from './MealCard'
-import html2canvas from 'html2canvas'
+import domtoimage from 'dom-to-image-more'
 import jsPDF from 'jspdf'
 
 interface DashboardClientProps {
@@ -52,13 +52,15 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
       const element = document.getElementById('plan-container');
       if (!element) return;
 
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff'
+      // Generar imagen de alta calidad con dom-to-image-more (maneja mejor el CORS de imágenes e iconos)
+      const dataUrl = await domtoimage.toJpeg(element, {
+        quality: 0.95,
+        bgcolor: '#ffffff',
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left',
+        }
       });
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
       const pdf = new jsPDF({
         orientation: 'portrait',
@@ -67,9 +69,17 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      // Creamos una imagen temporal para sacar sus dimensiones y mantener el ratio
+      const img = new Image();
+      img.src = dataUrl;
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+
+      const pdfHeight = (img.height * pdfWidth) / img.width;
+
+      pdf.addImage(dataUrl, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       pdf.save('tu-plan-semanal.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -111,7 +121,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
         </div>
 
         {/* Grid de días */}
-        <div className="grid grid-cols-7 gap-1 mb-8" data-html2canvas-ignore="true">
+        <div className="grid grid-cols-7 gap-1 mb-8" data-domtoimage-ignore="true">
           {DIAS_HEADERS.map((letra) => (
             <div key={letra} className="text-center text-xs font-bold text-gray-400 mb-2">
               {letra}
@@ -141,7 +151,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
         </div>
 
         {/* Creador de PDF: Mostrar label del día elegido solo en el PDF */}
-        <div className="hidden" data-html2canvas-show="true" style={{ display: 'none' }}>
+        <div className="hidden pdf-only">
           <h3 className="font-serif text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
             Día {getDiaNumero(plan.semana_inicio, diaSeleccionado)}
           </h3>
@@ -170,7 +180,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
         </div>
 
         {/* Botones de acción */}
-        <div className="flex flex-col gap-3 mt-10" data-html2canvas-ignore="true">
+        <div className="flex flex-col gap-3 mt-10" data-domtoimage-ignore="true">
           <button
             onClick={handleDownloadPDF}
             disabled={isGeneratingPDF}
