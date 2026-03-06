@@ -3,15 +3,10 @@ import Questionnaire from "@/components/onboarding/Questionnaire";
 export default function Home() {
   return (
     <main className="min-h-screen bg-[var(--color-background)]">
-      <header className="px-6 py-4 flex justify-between items-center max-w-6xl mx-auto">
+      <header className="px-6 py-4 flex justify-center items-center max-w-6xl mx-auto">
         <div className="font-serif text-2xl text-[var(--color-primary-dark)] font-medium">
           Tu Semana Sana
         </div>
-        <nav className="flex gap-4">
-          <a href="/login" className="text-[var(--color-foreground)]/80 hover:text-[var(--color-primary)] font-medium transition-colors">
-            Iniciar Sesión
-          </a>
-        </nav>
       </header>
 
       <div className="py-2 md:py-8">
@@ -27,8 +22,8 @@ export default function Home() {
       </div>
 
       {/* Footer simple */}
-      <footer className="py-6 bg-white text-center text-[var(--color-foreground)]/60 text-sm border-t border-[var(--color-background)] mt-auto">
-        <p>&copy; {new Date().getFullYear()} Tu Semana Sana. Todos los derechos reservados.</p>
+      <footer className="py-6 px-4 bg-white text-center text-[var(--color-foreground)]/80 text-sm border-t border-[var(--color-background)] mt-auto font-medium italic">
+        <p>«Recuperá tu de tiempo y dejá de estresarte pensando qué cocinar cada noche.»</p>
       </footer>
     </main>
   );
