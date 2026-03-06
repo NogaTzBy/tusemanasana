@@ -9,15 +9,15 @@ const IMAGES = [
 
 export default function ImageCarousel() {
     return (
-        <section className="w-full max-w-full overflow-hidden py-6">
+        <section className="w-full max-w-full overflow-hidden py-6 pb-16">
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @keyframes scroll-ltr {
-                    0% { transform: translateX(calc(-280px * 4 - 1.5rem * 4)); }
+                    0% { transform: translateX(calc(-160px * 4 - 1rem * 4)); }
                     100% { transform: translateX(0); }
                 }
                 .animate-scroll-ltr {
-                    animation: scroll-ltr 18s linear infinite;
+                    animation: scroll-ltr 16s linear infinite;
                     width: max-content;
                 }
                 .animate-scroll-ltr:hover {
@@ -27,13 +27,15 @@ export default function ImageCarousel() {
             }} />
 
             <div className="relative flex overflow-hidden">
-                <div className="animate-scroll-ltr flex gap-6 px-3">
+                <div className="animate-scroll-ltr flex gap-4 px-3">
                     {[...IMAGES, ...IMAGES].map((img, idx) => (
-                        <div key={idx} className="relative w-[280px] h-[200px] rounded-2xl overflow-hidden shrink-0 shadow-sm">
+                        <div key={idx} className="relative w-[160px] h-[285px] rounded-2xl overflow-hidden shrink-0 shadow-md">
                             <Image
                                 src={img.src}
                                 alt={img.alt}
                                 fill
+                                sizes="160px"
+                                quality={75}
                                 className="object-cover"
                             />
                         </div>
