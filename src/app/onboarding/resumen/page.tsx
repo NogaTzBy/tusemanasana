@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight, Sparkles } from "lucide-react";
 import CountdownTimer from "@/components/onboarding/CountdownTimer";
 import TestimonialWall from "@/components/onboarding/TestimonialWall";
+import ImageCarousel from "@/components/onboarding/ImageCarousel";
 
 export default function ResumenPage() {
     return (
@@ -76,6 +77,7 @@ export default function ResumenPage() {
             </section>
 
             <TestimonialWall />
+            <ImageCarousel />
 
         </main>
     );
