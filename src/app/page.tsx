@@ -2,14 +2,14 @@ import Questionnaire from "@/components/onboarding/Questionnaire";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col bg-[var(--color-background)]">
+    <main className="bg-[var(--color-background)]">
       <header className="px-6 py-4 flex justify-center items-center border-b border-black/5 max-w-6xl mx-auto w-full">
         <div className="font-sans font-bold tracking-tighter text-xl text-[var(--color-primary-dark)]">
           Tu Semana Sana
         </div>
       </header>
 
-      <div className="py-2 md:py-8">
+      <div className="pt-6">
         <div className="text-center max-w-2xl mx-auto px-6 mb-2 md:mb-4">
           <h1 className="text-2xl md:text-4xl font-serif text-[var(--color-primary-dark)] mb-2 md:mb-4 leading-tight">
             Armemos tu plan semanal perfecto

@@ -160,7 +160,7 @@ export default function Questionnaire() {
         : true; // Multiple is optional
 
     return (
-        <div className="max-w-xl mx-auto py-2 md:py-10 px-6">
+        <div className="max-w-xl mx-auto px-6 pb-6">
             {/* Progreso */}
             <div className="mb-4 md:mb-8">
                 <div className="flex justify-between text-sm text-[var(--color-foreground)]/60 mb-2">
