@@ -81,11 +81,18 @@ const questions: Question[] = [
 ];
 
 const ROTATING_TESTIMONIALS = [
-    { text: "Me salvó la vida a las 7 PM, no pienso más.", name: "Laura, 42", img: "https://randomuser.me/api/portraits/women/44.jpg" },
-    { text: "Bajé 3 kilos el primer mes sin darme cuenta.", name: "Valeria, 45", img: "https://randomuser.me/api/portraits/women/68.jpg" },
-    { text: "Dejé el delivery a la noche. ¡Increíble!", name: "Silvia, 50", img: "https://randomuser.me/api/portraits/women/12.jpg" },
-    { text: "Recuperé 40 min por día. Vale cada peso.", name: "Florencia, 47", img: "https://randomuser.me/api/portraits/women/33.jpg" },
-    { text: "Cocino rico, fácil y mi familia no se queja.", name: "Mariana, 38", img: "https://randomuser.me/api/portraits/women/24.jpg" }
+    { name: 'Laura, 42 años', text: 'Llegar a las 7 de la tarde y no pensar qué comen los chicos... no tiene precio.', img: 'https://randomuser.me/api/portraits/women/44.jpg' },
+    { name: 'Valeria, 45 años', text: 'Esto no es una dieta, es que alguien te resuelva la vida.', img: 'https://randomuser.me/api/portraits/women/68.jpg' },
+    { name: 'Silvia, 50 años', text: 'Al tener la lista del súper armada, dejé de pedir delivery a la noche. Increíble.', img: 'https://randomuser.me/api/portraits/women/12.jpg' },
+    { name: 'Mariana, 38 años', text: 'Nada de ingredientes raros o carísimos. Mi familia no se queja.', img: 'https://randomuser.me/api/portraits/women/24.jpg' },
+    { name: 'Florencia, 47 años', text: 'Recuperar 40 minutos por día que perdía pensando qué cocinar... lo vale.', img: 'https://randomuser.me/api/portraits/women/33.jpg' },
+    { name: 'Romina, 41 años', text: 'Compré mil PDFs de nutricionistas que nunca abrí. Esto es distinto.', img: 'https://randomuser.me/api/portraits/women/9.jpg' },
+    { name: 'Andrea, 36 años', text: 'Soy malísima cocinando. Pero con el paso a paso hasta me animo a más.', img: 'https://randomuser.me/api/portraits/women/17.jpg' },
+    { name: 'Carolina, 44 años', text: 'Odio contar calorías. Acá solo cocino lo que me dice el celu.', img: 'https://randomuser.me/api/portraits/women/55.jpg' },
+    { name: 'Natalia, 39 años', text: 'Tengo poco tiempo y siempre terminaba comiendo galletitas. Ahora ya no.', img: 'https://randomuser.me/api/portraits/women/29.jpg' },
+    { name: 'Gisela, 48 años', text: 'Lo pagas una sola vez y te sacas la mochila de por vida.', img: 'https://randomuser.me/api/portraits/women/39.jpg' },
+    { name: 'Patricia, 51 años', text: 'Mi médico me felicitó el mes pasado porque me bajó el colesterol.', img: 'https://randomuser.me/api/portraits/women/61.jpg' },
+    { name: 'Paula, 40 años', text: 'Si no me gustaba el pescado, tocaba un botón y me daba pollo. Así de fácil.', img: 'https://randomuser.me/api/portraits/women/8.jpg' },
 ];
 
 export default function Questionnaire() {

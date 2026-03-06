@@ -2,9 +2,9 @@ import Questionnaire from "@/components/onboarding/Questionnaire";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[var(--color-background)]">
-      <header className="px-6 py-4 flex justify-center items-center max-w-6xl mx-auto">
-        <div className="font-serif text-2xl text-[var(--color-primary-dark)] font-medium">
+    <main className="min-h-screen flex flex-col bg-[var(--color-background)]">
+      <header className="px-6 py-4 flex justify-center items-center border-b border-black/5 max-w-6xl mx-auto w-full">
+        <div className="font-sans font-bold tracking-tighter text-xl text-[var(--color-primary-dark)]">
           Tu Semana Sana
         </div>
       </header>
