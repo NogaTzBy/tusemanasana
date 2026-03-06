@@ -8,17 +8,17 @@ export default async function RegistroPage(props: {
     const searchParams = await props.searchParams
 
     return (
-        <main className="min-h-screen bg-[var(--color-background)] flex flex-col justify-center py-12 px-6 lg:px-8">
+        <main className="min-h-screen bg-[var(--color-background)] flex flex-col justify-center pt-12 pb-4 px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <Link href="/" className="inline-flex items-center text-[var(--color-foreground)]/60 hover:text-[var(--color-primary)] transition-colors mb-6">
                     <ArrowLeft className="w-5 h-5 mr-2" />
                     Volver al inicio
                 </Link>
-                <h2 className="mt-6 text-center text-4xl font-serif text-[var(--color-primary-dark)]">
-                    ¡Ya casi está!
+                <h2 className="mt-2 md:mt-6 text-center text-3xl md:text-4xl font-serif text-[var(--color-primary-dark)]">
+                    Regístrate para obtener ya tu plan semanal
                 </h2>
-                <p className="mt-2 text-center text-sm text-[var(--color-foreground)]/80">
-                    Tu pago fue procesado. Solo falta crear tu contraseña para acceder a tu plan.
+                <p className="mt-2 text-center text-sm md:text-base text-[var(--color-foreground)]/80">
+                    Tu pago fue procesado con éxito. Creá tu cuenta para acceder a todo el contenido de por vida.
                 </p>
             </div>
 
