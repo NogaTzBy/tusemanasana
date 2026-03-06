@@ -43,17 +43,17 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-dark-bg pb-32">
+    <div className="min-h-screen bg-white pb-32">
       {/* Header fijo */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-cream-surface dark:border-dark-border px-4 py-3 flex items-center justify-between">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-cream-surface px-4 py-3 flex items-center justify-between">
         <button
           onClick={() => router.back()}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-cream-surface dark:bg-dark-surface text-sage hover:bg-sage/10 transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-cream-surface text-sage hover:bg-sage/10 transition-colors"
           aria-label="Volver"
         >
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
-        <h1 className="text-lg font-serif font-bold text-[var(--color-primary-dark)] dark:text-gray-100">
+        <h1 className="text-lg font-serif font-bold text-[var(--color-primary-dark)] ">
           {CATEGORIA_LABELS[receta.categoria] ?? 'Receta'}
         </h1>
         <div className="w-10" />
@@ -73,7 +73,7 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
               priority
             />
           ) : (
-            <div className="w-full h-full bg-cream-surface dark:bg-dark-border flex items-center justify-center">
+            <div className="w-full h-full bg-cream-surface flex items-center justify-center">
               <span className="material-symbols-outlined text-gray-300 text-[64px]">restaurant</span>
             </div>
           )}
@@ -87,11 +87,11 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
 
         {/* Título */}
         <div className="mb-8">
-          <h2 className="font-serif text-3xl font-bold text-[var(--color-primary-dark)] dark:text-white leading-tight mb-4">
+          <h2 className="font-serif text-3xl font-bold text-[var(--color-primary-dark)] leading-tight mb-4">
             {receta.nombre}
           </h2>
           {receta.descripcion_corta && (
-            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+            <p className="text-gray-500 text-sm leading-relaxed mb-6">
               {receta.descripcion_corta}
             </p>
           )}
@@ -105,14 +105,14 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
 
         {/* Ingredientes */}
         <div className="mb-8">
-          <h3 className="font-serif text-xl font-bold text-[var(--color-primary-dark)] dark:text-white mb-4">
+          <h3 className="font-serif text-xl font-bold text-[var(--color-primary-dark)] mb-4">
             Ingredientes <span className="text-sm font-sans font-normal text-gray-400">({receta.ingredientes.length})</span>
           </h3>
           <div className="space-y-3">
             {receta.ingredientes.map((ing, index) => (
               <label
                 key={index}
-                className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 dark:border-dark-border hover:bg-cream-surface dark:hover:bg-dark-surface transition-colors cursor-pointer"
+                className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:bg-cream-surface transition-colors cursor-pointer"
               >
                 <input
                   type="checkbox"
@@ -120,7 +120,7 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
                   onChange={() => toggleIngrediente(index)}
                   className="w-5 h-5 border-gray-300 rounded accent-sage"
                 />
-                <span className={`flex-1 text-sm ${ingredientesChecked[index] ? 'line-through text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'}`}>
+                <span className={`flex-1 text-sm ${ingredientesChecked[index] ? 'line-through text-gray-300 ' : 'text-gray-700 '}`}>
                   <span className="font-semibold">{ing.cantidad} {ing.unidad}</span> de {ing.nombre}
                 </span>
               </label>
@@ -130,16 +130,16 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
 
         {/* Instrucciones */}
         <div className="mb-12">
-          <h3 className="font-serif text-xl font-bold text-[var(--color-primary-dark)] dark:text-white mb-6">
+          <h3 className="font-serif text-xl font-bold text-[var(--color-primary-dark)] mb-6">
             Instrucciones <span className="text-sm font-sans font-normal text-gray-400">({receta.pasos_preparacion.length} pasos)</span>
           </h3>
-          <div className="relative pl-8 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gray-200 dark:before:bg-dark-border">
+          <div className="relative pl-8 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gray-200 ">
             {receta.pasos_preparacion.map((paso, index) => (
               <div key={index} className="relative">
-                <div className={`absolute -left-8 top-0 flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ring-4 ring-cream dark:ring-dark-bg ${index === 0 ? 'bg-sage text-white' : 'bg-cream-surface dark:bg-dark-surface border-2 border-sage text-sage'}`}>
+                <div className={`absolute -left-8 top-0 flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ring-4 ring-cream ${index === 0 ? 'bg-sage text-white' : 'bg-cream-surface border-2 border-sage text-sage'}`}>
                   {index + 1}
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed pt-0.5">{paso}</p>
+                <p className="text-sm text-gray-600 leading-relaxed pt-0.5">{paso}</p>
               </div>
             ))}
           </div>
@@ -162,11 +162,11 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
 
 function InfoBubble({ icon, value, label }: { icon: string; value: string; label: string }) {
   return (
-    <div className="flex flex-col items-center justify-center bg-cream-surface dark:bg-dark-surface rounded-xl p-3 min-w-[72px] flex-1">
+    <div className="flex flex-col items-center justify-center bg-cream-surface rounded-xl p-3 min-w-[72px] flex-1">
       <div className="w-8 h-8 rounded-full bg-sage/20 flex items-center justify-center mb-2">
         <span className="material-symbols-outlined text-sage text-[18px]">{icon}</span>
       </div>
-      <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 text-center">{value}</span>
+      <span className="text-xs font-semibold text-gray-700 text-center">{value}</span>
       <span className="text-[10px] text-gray-400">{label}</span>
     </div>
   )

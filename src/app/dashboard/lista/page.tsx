@@ -2,44 +2,8 @@ import { getPerfilUsuario, getPlanSemanal } from '@/lib/supabase/queries'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import type { Ingrediente, PlanSemanal } from '@/lib/types'
-
-// Agrupa los ingredientes por nombre y suma sus cantidades
-function procesarListaDeCompras(plan: PlanSemanal) {
-    const conteo: Record<string, { cantidad: number, unidad: string }> = {}
-
-    plan.dias.forEach(dia => {
-        const recetas = [dia.desayuno, dia.almuerzo, dia.cena]
-        recetas.forEach(receta => {
-            if (!receta || !receta.ingredientes) return
-
-            const ingredientes = receta.ingredientes as Ingrediente[]
-            ingredientes.forEach(ing => {
-                const nombreNorm = ing.nombre.toLowerCase().trim()
-                if (conteo[nombreNorm]) {
-                    // Si las unidades coinciden, sumamos
-                    if (conteo[nombreNorm].unidad === ing.unidad) {
-                        conteo[nombreNorm].cantidad += ing.cantidad
-                    } else {
-                        // Si son unidades distintas, lo agregamos como item separado (ej: "Sal al gusto" vs "Sal 1 cda")
-                        conteo[`${nombreNorm} (${ing.unidad})`] = { cantidad: ing.cantidad, unidad: ing.unidad }
-                    }
-                } else {
-                    conteo[nombreNorm] = { cantidad: ing.cantidad, unidad: ing.unidad }
-                }
-            })
-        })
-    })
-
-    // Convertir el diccionario a un array ordenado alfabéticamente
-    const listaVacia = Object.entries(conteo).map(([nombre, datos]) => ({
-        nombre: nombre.charAt(0).toUpperCase() + nombre.slice(1),
-        cantidad: datos.cantidad,
-        unidad: datos.unidad
-    }))
-
-    return listaVacia.sort((a, b) => a.nombre.localeCompare(b.nombre))
-}
+import ShoppingListClient from '@/components/dashboard/ShoppingListClient'
+import { procesarListaDeCompras } from '@/lib/utils/shopping-list'
 
 export default async function ShoppingListPage() {
     const usuario = await getPerfilUsuario()
@@ -80,19 +44,7 @@ export default async function ShoppingListPage() {
                     {ingredientes.length === 0 ? (
                         <p className="text-gray-500 text-center py-8">Tu plan no tiene ingredientes asignados aún.</p>
                     ) : (
-                        <ul className="space-y-4">
-                            {ingredientes.map((item, idx) => (
-                                <li key={idx} className="flex items-center gap-3">
-                                    <div className="w-5 h-5 rounded border-2 border-gray-300 flex-shrink-0 cursor-pointer hover:border-terracotta transition-colors"></div>
-                                    <div className="flex-1 text-[var(--color-foreground)] text-base font-medium">
-                                        {item.nombre}
-                                    </div>
-                                    <div className="text-sm text-gray-500 font-mono bg-gray-50 px-2 py-1 rounded">
-                                        {item.cantidad > 0 ? `${item.cantidad} ${item.unidad}` : item.unidad}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                        <ShoppingListClient ingredientes={ingredientes} planId={plan.id} />
                     )}
                 </div>
 

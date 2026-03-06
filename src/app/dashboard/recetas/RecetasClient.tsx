@@ -31,9 +31,9 @@ export default function RecetasClient({ recetas }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-dark-bg">
-      <header className="sticky top-0 z-50 bg-cream/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-cream-surface dark:border-dark-border px-6 py-4">
-        <h1 className="font-serif text-2xl font-bold text-center text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-cream ">
+      <header className="sticky top-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-cream-surface px-6 py-4">
+        <h1 className="font-serif text-2xl font-bold text-center text-gray-900 ">
           Mis Recetas
         </h1>
       </header>
@@ -51,7 +51,7 @@ export default function RecetasClient({ recetas }: Props) {
           (Object.entries(porCategoria) as [keyof typeof porCategoria, Receta[]][]).map(([cat, lista]) => (
             lista.length > 0 && (
               <section key={cat} className="mb-8">
-                <h2 className="font-serif text-lg font-bold text-gray-800 dark:text-gray-200 mb-3 capitalize">
+                <h2 className="font-serif text-lg font-bold text-gray-800 mb-3 capitalize">
                   {CATEGORIA_LABELS[cat]}
                   <span className="ml-2 text-sm font-sans font-normal text-gray-400">{lista.length} recetas</span>
                 </h2>
@@ -60,7 +60,7 @@ export default function RecetasClient({ recetas }: Props) {
                     <Link
                       key={receta.id}
                       href={`/receta/${receta.id}`}
-                      className="flex gap-3 bg-white dark:bg-dark-surface rounded-xl overflow-hidden shadow-sm border border-gray-50 dark:border-dark-border active:scale-[0.99] transition-transform"
+                      className="flex gap-3 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-50 active:scale-[0.99] transition-transform"
                     >
                       <div className="relative w-24 h-24 flex-shrink-0">
                         {receta.foto_url ? (
@@ -86,7 +86,7 @@ export default function RecetasClient({ recetas }: Props) {
                         <span className={`inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded-full mb-1 ${CATEGORIA_COLOR[cat]}`}>
                           {CATEGORIA_LABELS[cat]}
                         </span>
-                        <p className="font-serif font-semibold text-gray-800 dark:text-gray-100 text-sm leading-tight line-clamp-2">{receta.nombre}</p>
+                        <p className="font-serif font-semibold text-gray-800 text-sm leading-tight line-clamp-2">{receta.nombre}</p>
                         <p className="text-gray-400 text-xs mt-1">{receta.tiempo_preparacion_min} min · {receta.calorias_aprox} kcal</p>
                       </div>
                     </Link>

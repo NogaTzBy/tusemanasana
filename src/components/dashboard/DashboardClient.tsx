@@ -4,8 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import type { PlanSemanal, Usuario } from '@/lib/types'
 import MealCard from './MealCard'
-import domtoimage from 'dom-to-image-more'
-import jsPDF from 'jspdf'
+import { procesarListaDeCompras } from '@/lib/utils/shopping-list'
 
 interface DashboardClientProps {
   plan: PlanSemanal
@@ -49,38 +48,75 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true)
     try {
-      const element = document.getElementById('plan-container');
-      if (!element) return;
+      const html2pdf = (await import('html2pdf.js')).default
 
-      // Generar imagen de alta calidad con dom-to-image-more (maneja mejor el CORS de imágenes e iconos)
-      const dataUrl = await domtoimage.toJpeg(element, {
-        quality: 0.95,
-        bgcolor: '#ffffff',
-        style: {
-          transform: 'scale(1)',
-          transformOrigin: 'top left',
-        }
-      });
+      const container = document.createElement('div')
+      container.style.padding = '20px'
+      container.style.fontFamily = 'sans-serif'
+      container.style.color = '#333'
 
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+      let htmlContent = `
+        <h1 style="text-align: center; color: #b75c40; font-size: 28px; margin-bottom: 30px;">
+          Tu Semana Sana - Mi Plan Semanal
+        </h1>
+      `
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
+      plan.dias.forEach((dia, idx) => {
+        htmlContent += `<div style="page-break-after: always; margin-bottom: 40px;">`
+        htmlContent += `<h2 style="color: #6a7c64; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">Día ${getDiaNumero(plan.semana_inicio, idx)}</h2>`
 
-      // Creamos una imagen temporal para sacar sus dimensiones y mantener el ratio
-      const img = new Image();
-      img.src = dataUrl;
-      await new Promise((resolve) => {
-        img.onload = resolve;
-      });
+        const comidas = [
+          { nombre: 'Desayuno', receta: dia.desayuno },
+          { nombre: 'Almuerzo', receta: dia.almuerzo },
+          { nombre: 'Cena', receta: dia.cena }
+        ]
 
-      const pdfHeight = (img.height * pdfWidth) / img.width;
+        comidas.forEach(comida => {
+          if (!comida.receta) return
+          const r = comida.receta
 
-      pdf.addImage(dataUrl, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('tu-plan-semanal.pdf');
+          htmlContent += `
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #b75c40; font-size: 18px; margin-bottom: 10px;">${comida.nombre}: ${r.nombre}</h3>
+              <p style="font-size: 14px; margin-bottom: 10px;"><em>Tiempo: ${r.tiempo_preparacion_min} min | Calorías aprox: ${r.calorias_aprox}</em></p>
+              
+              <h4 style="font-size: 14px; margin-bottom: 5px;">Ingredientes:</h4>
+              <ul style="font-size: 14px; margin-bottom: 15px; padding-left: 20px;">
+                ${(r.ingredientes as { nombre: string, cantidad: number, unidad: string }[]).map(ing => `<li>${ing.cantidad > 0 ? ing.cantidad : ''} ${ing.unidad} de ${ing.nombre}</li>`).join('')}
+              </ul>
+              
+              <h4 style="font-size: 14px; margin-bottom: 5px;">Preparación:</h4>
+              <ol style="font-size: 14px; padding-left: 20px;">
+                ${r.pasos_preparacion.map(paso => `<li style="margin-bottom: 5px;">${paso}</li>`).join('')}
+              </ol>
+            </div>
+          `
+        })
+        htmlContent += `</div>`
+      })
+
+      // Lista de compras
+      const lista = procesarListaDeCompras(plan)
+      htmlContent += `<div style="page-break-before: always;">`
+      htmlContent += `<h2 style="color: #6a7c64; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">Lista de Compras de la Semana</h2>`
+      htmlContent += `<ul style="font-size: 14px; padding-left: 20px;">`
+      lista.forEach(item => {
+        htmlContent += `<li style="margin-bottom: 8px;"><b>${item.nombre}</b>: ${item.cantidad > 0 ? item.cantidad : ''} ${item.unidad}</li>`
+      })
+      htmlContent += `</ul></div>`
+
+      container.innerHTML = htmlContent
+
+      const opt = {
+        margin: 15,
+        filename: 'tu-plan-semanal.pdf',
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+      }
+
+      await html2pdf().from(container).set(opt).save()
+
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Hubo un error al generar el PDF. Por favor, inténtalo de nuevo.');

@@ -19,20 +19,20 @@ export default function ProgresoClient() {
   const porcentaje = Math.round((completadas.length / totalSemana) * 100)
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-dark-bg">
-      <header className="sticky top-0 z-50 bg-cream/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-cream-surface dark:border-dark-border px-6 py-4">
-        <h1 className="font-serif text-2xl font-bold text-center text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-cream ">
+      <header className="sticky top-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-cream-surface px-6 py-4">
+        <h1 className="font-serif text-2xl font-bold text-center text-gray-900 ">
           Mi Progreso
         </h1>
       </header>
 
       <main className="max-w-lg mx-auto px-4 pb-28 pt-6">
         {/* Stats card */}
-        <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 shadow-sm border border-gray-50 dark:border-dark-border mb-6">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-50 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-gray-400 text-sm">Esta semana</p>
-              <p className="font-serif text-3xl font-bold text-gray-900 dark:text-white">
+              <p className="font-serif text-3xl font-bold text-gray-900 ">
                 {completadas.length}<span className="text-gray-300 text-xl">/{totalSemana}</span>
               </p>
               <p className="text-gray-400 text-xs mt-1">recetas completadas</p>
@@ -47,12 +47,12 @@ export default function ProgresoClient() {
                   strokeLinecap="round"
                 />
               </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-700 dark:text-gray-200">
+              <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-700 ">
                 {porcentaje}%
               </span>
             </div>
           </div>
-          <div className="w-full bg-cream-surface dark:bg-dark-border rounded-full h-2">
+          <div className="w-full bg-cream-surface rounded-full h-2">
             <div
               className="bg-sage h-2 rounded-full transition-all duration-500"
               style={{ width: `${porcentaje}%` }}
@@ -72,14 +72,14 @@ export default function ProgresoClient() {
           </div>
         ) : (
           <div>
-            <h2 className="font-serif text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">
+            <h2 className="font-serif text-lg font-bold text-gray-800 mb-3">
               Recetas completadas
             </h2>
             <div className="space-y-3">
               {[...completadas].reverse().map((receta) => (
                 <div
                   key={receta.id}
-                  className="flex gap-3 bg-white dark:bg-dark-surface rounded-xl overflow-hidden shadow-sm border border-gray-50 dark:border-dark-border"
+                  className="flex gap-3 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-50 "
                 >
                   <div className="relative w-20 h-20 flex-shrink-0">
                     {receta.foto_url ? (
@@ -100,7 +100,7 @@ export default function ProgresoClient() {
                     </div>
                   </div>
                   <div className="flex-1 py-3 pr-2 min-w-0">
-                    <p className="font-serif font-semibold text-gray-800 dark:text-gray-100 text-sm leading-tight">{receta.nombre}</p>
+                    <p className="font-serif font-semibold text-gray-800 text-sm leading-tight">{receta.nombre}</p>
                     <p className="text-gray-400 text-xs mt-1">{CATEGORIA_LABELS[receta.categoria]}</p>
                     <p className="text-gray-300 text-xs">{new Date(receta.completada_en).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}</p>
                   </div>

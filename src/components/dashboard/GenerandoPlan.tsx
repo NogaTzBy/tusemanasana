@@ -27,20 +27,20 @@ export default function GenerandoPlan() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-cream dark:bg-dark-bg flex flex-col items-center justify-center px-6 text-center">
+      <div className="min-h-screen bg-cream flex flex-col items-center justify-center px-6 text-center">
         <div className="w-16 h-16 rounded-full bg-terracotta/10 flex items-center justify-center mb-6">
           <svg className="w-8 h-8 text-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z" />
           </svg>
         </div>
-        <h1 className="font-serif text-2xl text-gray-900 dark:text-gray-100 mb-3">
+        <h1 className="font-serif text-2xl text-gray-900 mb-3">
           No se pudo generar el plan
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 max-w-sm mb-2">
+        <p className="text-gray-500 max-w-sm mb-2">
           Hubo un error al crear tu menú semanal.
         </p>
         {errorDetalle && (
-          <p className="text-xs text-gray-400 max-w-sm mb-6 font-mono break-all bg-cream-surface dark:bg-dark-surface px-3 py-2 rounded-lg">
+          <p className="text-xs text-gray-400 max-w-sm mb-6 font-mono break-all bg-cream-surface px-3 py-2 rounded-lg">
             {errorDetalle}
           </p>
         )}
@@ -55,10 +55,10 @@ export default function GenerandoPlan() {
   }
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-dark-bg flex flex-col items-center justify-center px-6 text-center">
+    <div className="min-h-screen bg-cream flex flex-col items-center justify-center px-6 text-center">
       {/* Spinner animado CSS puro */}
       <div className="relative w-20 h-20 mb-8">
-        <div className="absolute inset-0 rounded-full border-4 border-cream-surface dark:border-dark-border" />
+        <div className="absolute inset-0 rounded-full border-4 border-cream-surface " />
         <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-terracotta animate-spin" />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-8 h-8 rounded-full bg-terracotta/15 flex items-center justify-center">
@@ -67,10 +67,10 @@ export default function GenerandoPlan() {
         </div>
       </div>
 
-      <h1 className="font-serif text-2xl text-gray-900 dark:text-gray-100 mb-3">
+      <h1 className="font-serif text-2xl text-gray-900 mb-3">
         Generando tu plan personalizado
       </h1>
-      <p className="text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed text-sm">
+      <p className="text-gray-500 max-w-sm leading-relaxed text-sm">
         La IA está creando tu menú semanal basado en tus objetivos. Esto puede tardar hasta 30 segundos...
       </p>
 
