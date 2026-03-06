@@ -21,10 +21,6 @@ export default function Home() {
         <Questionnaire />
       </div>
 
-      {/* Footer simple */}
-      <footer className="pt-6 pb-2 px-4 bg-white text-center text-[var(--color-foreground)]/80 text-sm border-t border-[var(--color-background)] mt-auto font-medium italic">
-        <p>«Recuperá tu tiempo y dejá de estresarte pensando qué cocinar cada noche.»</p>
-      </footer>
     </main>
   );
 }

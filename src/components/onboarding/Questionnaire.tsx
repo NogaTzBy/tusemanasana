@@ -245,7 +245,9 @@ export default function Questionnaire() {
                 </button>
             </div>
 
-
+            <p className="mt-8 md:mt-12 text-center text-[var(--color-foreground)]/80 text-sm md:text-base font-medium italic animate-in fade-in duration-500">
+                «Recuperá tu tiempo y dejá de estresarte pensando qué cocinar cada noche.»
+            </p>
         </div>
     );
 }
