@@ -27,7 +27,7 @@ export default function Home() {
       </div>
 
       {/* Footer simple */}
-      <footer className="py-12 bg-white text-center text-[var(--color-foreground)]/60 text-sm border-t border-[var(--color-background)] mt-auto">
+      <footer className="py-6 bg-white text-center text-[var(--color-foreground)]/60 text-sm border-t border-[var(--color-background)] mt-auto">
         <p>&copy; {new Date().getFullYear()} Tu Semana Sana. Todos los derechos reservados.</p>
       </footer>
     </main>
