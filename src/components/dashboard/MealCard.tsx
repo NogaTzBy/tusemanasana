@@ -99,7 +99,7 @@ export default function MealCard({ receta, categoria, diaIndex, planId }: MealCa
       {/* Contenido */}
       <div className="p-5 flex flex-col gap-3">
         <div>
-          <h3 className="text-xl font-bold font-serif text-gray-900 dark:text-gray-100 leading-tight">
+          <h3 className="text-xl font-bold font-serif text-[var(--color-foreground)] group-hover:text-[var(--color-primary-dark)] dark:text-gray-100 leading-tight transition-colors">
             {receta.nombre}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">

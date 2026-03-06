@@ -44,11 +44,11 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
   const semanaLabel = getSemanaLabel(plan.semana_inicio)
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-dark-bg flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-dark-bg flex flex-col">
       {/* ── Header ────────────────────────────────────────────── */}
-      <header className="flex items-center justify-between px-6 py-4 sticky top-0 z-50 bg-cream/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-cream-surface dark:border-dark-border">
+      <header className="flex items-center justify-between px-6 py-4 sticky top-0 z-50 bg-white/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-cream-surface dark:border-dark-border">
         <div className="w-10" />
-        <h1 className="font-serif text-2xl font-bold tracking-tight text-center text-gray-900 dark:text-gray-100">
+        <h1 className="font-serif text-2xl font-bold tracking-tight text-center text-[var(--color-primary-dark)] dark:text-gray-100">
           Tu Semana Sana
         </h1>
         <div className="w-10" />
@@ -57,7 +57,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
       {/* ── Main ──────────────────────────────────────────────── */}
       <main className="flex-1 w-full max-w-md mx-auto px-4 pb-24">
         {/* Título */}
-        <h2 className="font-serif text-[28px] font-bold leading-tight text-left pt-6 pb-2 text-gray-900 dark:text-gray-100">
+        <h2 className="font-serif text-[28px] font-bold leading-tight text-left pt-6 pb-2 text-[var(--color-primary-dark)] dark:text-gray-100">
           Mi Plan Semanal
         </h2>
 
@@ -89,15 +89,14 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
               <button
                 key={index}
                 onClick={() => setDiaSeleccionado(index)}
-                className={`aspect-square flex flex-col items-center justify-center rounded-full text-sm transition-colors ${
-                  esActivo
+                className={`aspect-square flex flex-col items-center justify-center rounded-full text-sm transition-colors ${esActivo
                     ? 'bg-sage text-white shadow-md font-medium'
                     : esHoy
                       ? 'font-bold text-terracotta hover:bg-cream-surface dark:hover:bg-dark-surface'
                       : esFinDeSemana
                         ? 'text-gray-400 hover:bg-cream-surface dark:hover:bg-dark-surface'
                         : 'text-gray-900 dark:text-gray-100 hover:bg-cream-surface dark:hover:bg-dark-surface'
-                }`}
+                  }`}
               >
                 <span>{getDiaNumero(plan.semana_inicio, index)}</span>
               </button>

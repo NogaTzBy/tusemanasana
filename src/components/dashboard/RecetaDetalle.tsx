@@ -43,9 +43,9 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
   }
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-dark-bg pb-32">
+    <div className="min-h-screen bg-white dark:bg-dark-bg pb-32">
       {/* Header fijo */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-cream/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-cream-surface dark:border-dark-border px-4 py-3 flex items-center justify-between">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-cream-surface dark:border-dark-border px-4 py-3 flex items-center justify-between">
         <button
           onClick={() => router.back()}
           className="flex items-center justify-center w-10 h-10 rounded-full bg-cream-surface dark:bg-dark-surface text-sage hover:bg-sage/10 transition-colors"
@@ -53,7 +53,7 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
         >
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
-        <h1 className="text-lg font-serif font-bold text-gray-800 dark:text-gray-100">
+        <h1 className="text-lg font-serif font-bold text-[var(--color-primary-dark)] dark:text-gray-100">
           {CATEGORIA_LABELS[receta.categoria] ?? 'Receta'}
         </h1>
         <div className="w-10" />
@@ -87,7 +87,7 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
 
         {/* Título */}
         <div className="mb-8">
-          <h2 className="font-serif text-3xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
+          <h2 className="font-serif text-3xl font-bold text-[var(--color-primary-dark)] dark:text-white leading-tight mb-4">
             {receta.nombre}
           </h2>
           {receta.descripcion_corta && (
@@ -105,7 +105,7 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
 
         {/* Ingredientes */}
         <div className="mb-8">
-          <h3 className="font-serif text-xl font-bold text-gray-900 dark:text-white mb-4">
+          <h3 className="font-serif text-xl font-bold text-[var(--color-primary-dark)] dark:text-white mb-4">
             Ingredientes <span className="text-sm font-sans font-normal text-gray-400">({receta.ingredientes.length})</span>
           </h3>
           <div className="space-y-3">
@@ -130,7 +130,7 @@ export default function RecetaDetalle({ receta }: RecetaDetalleProps) {
 
         {/* Instrucciones */}
         <div className="mb-12">
-          <h3 className="font-serif text-xl font-bold text-gray-900 dark:text-white mb-6">
+          <h3 className="font-serif text-xl font-bold text-[var(--color-primary-dark)] dark:text-white mb-6">
             Instrucciones <span className="text-sm font-sans font-normal text-gray-400">({receta.pasos_preparacion.length} pasos)</span>
           </h3>
           <div className="relative pl-8 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gray-200 dark:before:bg-dark-border">

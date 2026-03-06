@@ -256,17 +256,84 @@ async function getPlanDesdeRepositorio(
       .select('id, nombre, descripcion_corta, ingredientes, pasos_preparacion, tiempo_preparacion_min, categoria, tags, foto_url, porciones_base, calorias_aprox')
       .eq('categoria', cat)
 
-    // Filtrar vegetarianas si el perfil lo indica
-    if (perfil?.tipo_alimentacion?.toLowerCase().includes('vegetarian')) {
+    // Filtrar vegetarianas estrictamente en base de datos si el perfil lo indica
+    const esVegetariano = perfil?.tipo_alimentacion?.toLowerCase().includes('vegetarian')
+    if (esVegetariano) {
       query = query.contains('tags', ['vegetariano'])
     }
 
-    const { data, error } = await query
-    if (error || !data || data.length < 7) return null
+    let { data, error } = await query
 
-    // Mezclar aleatoriamente y tomar 7
-    const mezcladas = [...data].sort(() => Math.random() - 0.5).slice(0, 7)
-    seleccionadas[cat] = mezcladas as Receta[]
+    // Fallback de base de datos si no hay suficientes (ej: si los tags no están bien cargados)
+    if (esVegetariano && (!data || data.length < 7)) {
+      console.log(`Fallback DB para categoría ${cat}: no hay suficientes vegetarianas. Obteniendo sin filtro estricto.`)
+      const { data: fallbackData, error: fallbackError } = await supabase
+        .from('recetas')
+        .select('id, nombre, descripcion_corta, ingredientes, pasos_preparacion, tiempo_preparacion_min, categoria, tags, foto_url, porciones_base, calorias_aprox')
+        .eq('categoria', cat)
+
+      data = fallbackData
+      error = fallbackError
+    }
+
+    if (error || !data || data.length < 7) {
+      console.error(`getPlanDesdeRepositorio: Faltan recetas en la BD para la categoría ${cat}. Encontradas: ${data?.length || 0}`)
+      return null
+    }
+
+    let recetasCandidatas = data as Receta[]
+
+    // --- Aplicar filtros inteligentes en memoria con fallback ---
+
+    // 1. Exclusiones de alimentos (alergias/gustos)
+    if (perfil?.alimentos_excluidos && perfil.alimentos_excluidos.length > 0) {
+      // Ignorar "ninguna" o arrays vacíos accidentalmente llenos
+      const excluidos = perfil.alimentos_excluidos
+        .filter(e => e.toLowerCase() !== 'ninguna')
+        .map(e => e.toLowerCase())
+
+      if (excluidos.length > 0) {
+        const sinExcluidos = recetasCandidatas.filter(r => {
+          const ingredientes = (r.ingredientes as { nombre: string }[]) || []
+          const textToSearch = (r.nombre + ' ' + ingredientes.map(i => i.nombre).join(' ')).toLowerCase()
+          return !excluidos.some(ex => textToSearch.includes(ex))
+        })
+        // Solo aplicar filtro si nos sobran suficientes recetas para la semana
+        if (sinExcluidos.length >= 7) {
+          recetasCandidatas = sinExcluidos
+        }
+      }
+    }
+
+    // 2. Tiempo disponible o quest "Cocinar Rápido"
+    const quiereRapido = perfil?.objetivo === 'cocinar_rapido' || perfil?.tiempo_disponible === 'menos_20'
+    if (quiereRapido) {
+      const rapidas = recetasCandidatas.filter(r => r.tiempo_preparacion_min <= 25)
+      if (rapidas.length >= 7) {
+        recetasCandidatas = rapidas
+      }
+    }
+
+    // 3. Objetivo: Bajar de peso (priorizar bajas calorías)
+    if (perfil?.objetivo === 'bajar_peso') {
+      const caloriasMaximas = cat === 'desayuno' ? 350 : 450;
+      const light = recetasCandidatas.filter(r => r.calorias_aprox && r.calorias_aprox <= caloriasMaximas)
+
+      if (light.length >= 7) {
+        recetasCandidatas = light
+      } else {
+        // Fallback: Si no hay suficientes estrictamente bajas en calorías, 
+        // ordenamos por calorías y nos quedamos con la mitad más "light" que alcance a 7.
+        recetasCandidatas.sort((a, b) => (a.calorias_aprox || 9999) - (b.calorias_aprox || 9999))
+        recetasCandidatas = recetasCandidatas.slice(0, Math.max(7, Math.floor(recetasCandidatas.length / 2)))
+        // Volvemos a desordenar para la selección final
+        recetasCandidatas.sort(() => Math.random() - 0.5)
+      }
+    }
+
+    // Mezclar aleatoriamente las candidatas finales y tomar 7
+    const mezcladas = [...recetasCandidatas].sort(() => Math.random() - 0.5).slice(0, 7)
+    seleccionadas[cat] = mezcladas
   }
 
   return Array.from({ length: 7 }, (_, i) => ({
