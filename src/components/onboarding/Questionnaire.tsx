@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 
-import Image from "next/image";
+
 
 type Question = {
     id: string;
@@ -80,34 +80,14 @@ const questions: Question[] = [
     }
 ];
 
-const ROTATING_TESTIMONIALS = [
-    { name: 'Laura, 42 años', text: 'Llegar a las 7 de la tarde y no pensar qué comen los chicos... no tiene precio.', img: 'https://randomuser.me/api/portraits/women/44.jpg' },
-    { name: 'Valeria, 45 años', text: 'Esto no es una dieta, es que alguien te resuelva la vida.', img: 'https://randomuser.me/api/portraits/women/68.jpg' },
-    { name: 'Silvia, 50 años', text: 'Al tener la lista del súper armada, dejé de pedir delivery a la noche. Increíble.', img: 'https://randomuser.me/api/portraits/women/12.jpg' },
-    { name: 'Mariana, 38 años', text: 'Nada de ingredientes raros o carísimos. Mi familia no se queja.', img: 'https://randomuser.me/api/portraits/women/24.jpg' },
-    { name: 'Florencia, 47 años', text: 'Recuperar 40 minutos por día que perdía pensando qué cocinar... lo vale.', img: 'https://randomuser.me/api/portraits/women/33.jpg' },
-    { name: 'Romina, 41 años', text: 'Compré mil PDFs de nutricionistas que nunca abrí. Esto es distinto.', img: 'https://randomuser.me/api/portraits/women/9.jpg' },
-    { name: 'Andrea, 36 años', text: 'Soy malísima cocinando. Pero con el paso a paso hasta me animo a más.', img: 'https://randomuser.me/api/portraits/women/17.jpg' },
-    { name: 'Carolina, 44 años', text: 'Odio contar calorías. Acá solo cocino lo que me dice el celu.', img: 'https://randomuser.me/api/portraits/women/55.jpg' },
-    { name: 'Natalia, 39 años', text: 'Tengo poco tiempo y siempre terminaba comiendo galletitas. Ahora ya no.', img: 'https://randomuser.me/api/portraits/women/29.jpg' },
-    { name: 'Gisela, 48 años', text: 'Lo pagas una sola vez y te sacas la mochila de por vida.', img: 'https://randomuser.me/api/portraits/women/39.jpg' },
-    { name: 'Patricia, 51 años', text: 'Mi médico me felicitó el mes pasado porque me bajó el colesterol.', img: 'https://randomuser.me/api/portraits/women/61.jpg' },
-    { name: 'Paula, 40 años', text: 'Si no me gustaba el pescado, tocaba un botón y me daba pollo. Así de fácil.', img: 'https://randomuser.me/api/portraits/women/8.jpg' },
-];
+
 
 export default function Questionnaire() {
     const [currentStep, setCurrentStep] = useState(0);
     const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
     const [isProcessing, setIsProcessing] = useState(false);
     const [otherExclusion, setOtherExclusion] = useState("");
-    const [testimonialIdx, setTestimonialIdx] = useState(0);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTestimonialIdx(prev => (prev + 1) % ROTATING_TESTIMONIALS.length);
-        }, 3500);
-        return () => clearInterval(interval);
-    }, []);
 
     const question = questions[currentStep];
 
@@ -265,30 +245,7 @@ export default function Questionnaire() {
                 </button>
             </div>
 
-            {/* Testimonio Rotativo */}
-            <div className="mt-8 flex justify-center">
-                <div className="bg-white/80 backdrop-blur-sm border border-[var(--color-primary)]/20 p-4 rounded-2xl shadow-sm max-w-sm w-full mx-auto relative overflow-hidden transition-all duration-500 min-h-[80px]">
-                    {ROTATING_TESTIMONIALS.map((t, idx) => (
-                        <div
-                            key={idx}
-                            className={`flex items-center gap-3 absolute inset-0 p-4 transition-opacity duration-500 ${testimonialIdx === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'
-                                }`}
-                        >
-                            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-gray-100">
-                                <Image src={t.img} alt={t.name} width={40} height={40} className="object-cover" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-[var(--color-foreground)]/80 italic line-clamp-2 leading-tight">
-                                    &ldquo;{t.text}&rdquo;
-                                </p>
-                                <p className="font-bold text-[10px] text-[var(--color-primary-dark)] mt-1">
-                                    {t.name} <span className="text-yellow-400 ml-1">★★★★★</span>
-                                </p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+
         </div>
     );
 }
