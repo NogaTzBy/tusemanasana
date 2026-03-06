@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+
+import Image from "next/image";
 
 type Question = {
     id: string;
@@ -13,23 +15,23 @@ type Question = {
 const questions: Question[] = [
     {
         id: "objetivo",
-        title: "¿Cuál es tu objetivo principal?",
+        title: "¿Cuál es tu meta principal hoy?",
         type: "single",
         options: [
-            { label: "Bajar de peso", value: "bajar_peso" },
-            { label: "Comer más sano", value: "comer_sano" },
-            { label: "Cocinar rápido y rico", value: "cocinar_rapido" },
+            { label: "Bajar de peso sin dietas", value: "bajar_peso" },
+            { label: "Comer sano y tener energía", value: "comer_sano" },
+            { label: "Cocinar rápido para mi familia", value: "cocinar_rapido" },
             { label: "Mantener mi peso", value: "mantener" },
         ],
     },
     {
         id: "tiempo",
-        title: "¿Cuánto tiempo tienes para cocinar por día?",
+        title: "Sinceramente, ¿cuánto tiempo tienes para cocinar por día?",
         type: "single",
         options: [
-            { label: "Menos de 20 min", value: "menos_20" },
-            { label: "20–40 min", value: "20_40" },
-            { label: "Más de 40 min", value: "mas_40" },
+            { label: "Menos de 20 min (Vivo apurada)", value: "menos_20" },
+            { label: "20–40 min (Puedo dedicar un rato)", value: "20_40" },
+            { label: "Más de 40 min (Me gusta cocinar)", value: "mas_40" },
         ],
     },
     {
@@ -37,7 +39,7 @@ const questions: Question[] = [
         title: "¿Sigues algún tipo de alimentación especial?",
         type: "single",
         options: [
-            { label: "Ninguna", value: "ninguna" },
+            { label: "Ninguna, como de todo", value: "ninguna" },
             { label: "Sin gluten", value: "sin_gluten" },
             { label: "Vegetariana", value: "vegetariana" },
             { label: "Sin lácteos", value: "sin_lacteos" },
@@ -45,7 +47,7 @@ const questions: Question[] = [
     },
     {
         id: "exclusiones",
-        title: "¿Hay alimentos que no te gustan o no puedes comer?",
+        title: "¿Hay alimentos que no te gustan o evitarías?",
         type: "multiple",
         options: [
             { label: "Mariscos", value: "mariscos" },
@@ -53,11 +55,12 @@ const questions: Question[] = [
             { label: "Picante", value: "picante" },
             { label: "Huevo", value: "huevo" },
             { label: "Frutos secos", value: "frutos_secos" },
+            { label: "Otro (Especificar)", value: "otro" },
         ],
     },
     {
         id: "personas",
-        title: "¿Para cuántas personas cocinas?",
+        title: "¿Para cuántas personas cocinas normalmente?",
         type: "single",
         options: [
             { label: "Solo para mí", value: "1" },
@@ -67,20 +70,37 @@ const questions: Question[] = [
     },
     {
         id: "frecuencia",
-        title: "¿Con qué frecuencia quieres recibir recetas nuevas?",
+        title: "¿Cómo prefieres recibir las recetas?",
         type: "single",
         options: [
-            { label: "Todos los días", value: "diario" },
             { label: "Plan semanal completo", value: "semanal" },
-            { label: "Ambos", value: "ambos" },
+            { label: "Día por día", value: "diario" },
+            { label: "Ambas opciones me sirven", value: "ambos" },
         ],
     }
+];
+
+const ROTATING_TESTIMONIALS = [
+    { text: "Me salvó la vida a las 7 PM, no pienso más.", name: "Laura, 42", img: "https://randomuser.me/api/portraits/women/44.jpg" },
+    { text: "Bajé 3 kilos el primer mes sin darme cuenta.", name: "Valeria, 45", img: "https://randomuser.me/api/portraits/women/68.jpg" },
+    { text: "Dejé el delivery a la noche. ¡Increíble!", name: "Silvia, 50", img: "https://randomuser.me/api/portraits/women/12.jpg" },
+    { text: "Recuperé 40 min por día. Vale cada peso.", name: "Florencia, 47", img: "https://randomuser.me/api/portraits/women/33.jpg" },
+    { text: "Cocino rico, fácil y mi familia no se queja.", name: "Mariana, 38", img: "https://randomuser.me/api/portraits/women/24.jpg" }
 ];
 
 export default function Questionnaire() {
     const [currentStep, setCurrentStep] = useState(0);
     const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
     const [isProcessing, setIsProcessing] = useState(false);
+    const [otherExclusion, setOtherExclusion] = useState("");
+    const [testimonialIdx, setTestimonialIdx] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTestimonialIdx(prev => (prev + 1) % ROTATING_TESTIMONIALS.length);
+        }, 3500);
+        return () => clearInterval(interval);
+    }, []);
 
     const question = questions[currentStep];
 
@@ -122,7 +142,14 @@ export default function Questionnaire() {
     const finishOnboarding = () => {
         setIsProcessing(true);
         if (typeof window !== 'undefined') {
-            localStorage.setItem('tu_semana_sana_respuestas', JSON.stringify(answers));
+            const finalAnswers = { ...answers };
+            if (otherExclusion.trim() !== "") {
+                const exc = (finalAnswers["exclusiones"] as string[]) || [];
+                if (exc.includes("otro")) {
+                    finalAnswers["exclusiones"] = [...exc.filter(e => e !== "otro"), `Otro: ${otherExclusion}`];
+                }
+            }
+            localStorage.setItem('tu_semana_sana_respuestas', JSON.stringify(finalAnswers));
         }
         setTimeout(() => {
             window.location.href = "/onboarding/resumen";
@@ -171,23 +198,39 @@ export default function Questionnaire() {
                 {question.options.map((option) => {
                     const selected = isSelected(option.value);
                     return (
-                        <button
-                            key={option.value}
-                            onClick={() => handleSelect(option.value)}
-                            className={`w-full text-left p-3 md:p-5 rounded-2xl border-2 transition-all duration-200 flex items-center justify-between
-                ${selected
-                                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
-                                    : "border-[var(--color-surface)] bg-white hover:border-[var(--color-primary)]/30"
-                                }`}
-                        >
-                            <span className={`text-base md:text-lg ${selected ? "text-[var(--color-primary-dark)] font-medium" : "text-[var(--color-foreground)]"}`}>
-                                {option.label}
-                            </span>
-                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                ${selected ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-gray-200"}`}>
-                                {selected && <Check className="w-4 h-4 text-white" />}
-                            </div>
-                        </button>
+                        <div key={option.value}>
+                            <button
+                                onClick={() => handleSelect(option.value)}
+                                className={`w-full text-left p-3 md:p-5 rounded-2xl border-2 transition-all duration-200 flex items-center justify-between
+                    ${selected
+                                        ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
+                                        : "border-[var(--color-surface)] bg-white hover:border-[var(--color-primary)]/30"
+                                    }`}
+                            >
+                                <span className={`text-base md:text-lg ${selected ? "text-[var(--color-primary-dark)] font-medium" : "text-[var(--color-foreground)]"}`}>
+                                    {option.label}
+                                </span>
+                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ml-3
+                    ${selected ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-gray-200"}`}>
+                                    {selected && <Check className="w-4 h-4 text-white" />}
+                                </div>
+                            </button>
+
+                            {/* Input extra si elige "Otro" */}
+                            {option.value === "otro" && selected && (
+                                <div className="pt-2 px-1 animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <input
+                                        type="text"
+                                        placeholder="Ej: Berenjena, lentejas..."
+                                        value={otherExclusion}
+                                        onChange={(e) => setOtherExclusion(e.target.value)}
+                                        className="w-full p-4 rounded-xl border border-[var(--color-primary)]/40 focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none transition-all text-[var(--color-foreground)] bg-white"
+                                        onClick={(e) => e.stopPropagation()}
+                                        autoFocus
+                                    />
+                                </div>
+                            )}
+                        </div>
                     );
                 })}
             </div>
@@ -208,11 +251,36 @@ export default function Questionnaire() {
                     className={`px-6 py-2 md:px-8 md:py-3 rounded-full flex items-center font-medium transition-all
             ${(!isCurrentAnswered && question.type === "single")
                             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                            : "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-dark)] shadow-md"
+                            : "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-dark)] shadow-md hover:scale-105 active:scale-95"
                         }`}
                 >
-                    {currentStep === questions.length - 1 ? "Terminar" : "Siguiente"} <ArrowRight className="w-5 h-5 ml-2" />
+                    {currentStep === questions.length - 1 ? "Ver mi Plan" : "Siguiente"} <ArrowRight className="w-5 h-5 ml-2" />
                 </button>
+            </div>
+
+            {/* Testimonio Rotativo */}
+            <div className="mt-8 flex justify-center">
+                <div className="bg-white/80 backdrop-blur-sm border border-[var(--color-primary)]/20 p-4 rounded-2xl shadow-sm max-w-sm w-full mx-auto relative overflow-hidden transition-all duration-500 min-h-[80px]">
+                    {ROTATING_TESTIMONIALS.map((t, idx) => (
+                        <div
+                            key={idx}
+                            className={`flex items-center gap-3 absolute inset-0 p-4 transition-opacity duration-500 ${testimonialIdx === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                                }`}
+                        >
+                            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-gray-100">
+                                <Image src={t.img} alt={t.name} width={40} height={40} className="object-cover" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs text-[var(--color-foreground)]/80 italic line-clamp-2 leading-tight">
+                                    &ldquo;{t.text}&rdquo;
+                                </p>
+                                <p className="font-bold text-[10px] text-[var(--color-primary-dark)] mt-1">
+                                    {t.name} <span className="text-yellow-400 ml-1">★★★★★</span>
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

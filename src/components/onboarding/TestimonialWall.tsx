@@ -67,7 +67,7 @@ export default function TestimonialWall() {
     return (
         <section className="mt-16 w-full max-w-4xl mx-auto px-4 pb-16">
             <div className="text-center mb-10">
-                <h2 className="text-3xl font-serif text-[var(--color-primary-dark)] dark:text-gray-100">
+                <h2 className="text-3xl font-serif text-[var(--color-primary-dark)]">
                     Ya son más de 12.000 mujeres comiendo rico y sano
                 </h2>
                 <p className="text-[var(--color-foreground)]/60 mt-2">
@@ -77,13 +77,13 @@ export default function TestimonialWall() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {TESTIMONIALS.map((t, idx) => (
-                    <div key={idx} className="bg-white dark:bg-dark-surface p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border flex flex-col h-full">
+                    <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
                                 <Image src={t.image} alt={t.name} width={48} height={48} className="object-cover" />
                             </div>
                             <div>
-                                <p className="font-bold text-sm text-[var(--color-primary-dark)] dark:text-gray-200">
+                                <p className="font-bold text-sm text-[var(--color-primary-dark)]">
                                     {t.name}
                                 </p>
                                 <div className="flex text-yellow-400 text-xs">
@@ -91,7 +91,7 @@ export default function TestimonialWall() {
                                 </div>
                             </div>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 italic flex-1">
+                        <p className="text-sm text-[var(--color-foreground)]/80 italic flex-1">
                             &ldquo;{t.text}&rdquo;
                         </p>
                     </div>
