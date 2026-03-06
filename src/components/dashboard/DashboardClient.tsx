@@ -48,78 +48,106 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true)
     try {
-      const html2pdf = (await import('html2pdf.js')).default
+      const { jsPDF } = await import('jspdf')
+      const doc = new jsPDF()
 
-      const container = document.createElement('div')
-      container.style.padding = '20px'
-      container.style.fontFamily = 'sans-serif'
-      container.style.color = '#333'
+      const pageH = doc.internal.pageSize.height
+      const pageW = doc.internal.pageSize.width
+      const marginX = 15
+      const maxW = pageW - marginX * 2
+      let y = 20
 
-      let htmlContent = `
-        <h1 style="text-align: center; color: #b75c40; font-size: 28px; margin-bottom: 30px;">
-          Tu Semana Sana - Mi Plan Semanal
-        </h1>
-      `
+      const checkNewPage = (needed: number) => {
+        if (y + needed > pageH - 15) {
+          doc.addPage()
+          y = 20
+        }
+      }
+
+      const writeLine = (
+        text: string,
+        opts: { size?: number; bold?: boolean; color?: [number, number, number]; indent?: number } = {}
+      ) => {
+        const { size = 11, bold = false, color = [51, 51, 51], indent = 0 } = opts
+        doc.setFontSize(size)
+        doc.setFont('helvetica', bold ? 'bold' : 'normal')
+        doc.setTextColor(color[0], color[1], color[2])
+        const lines = doc.splitTextToSize(text, maxW - indent)
+        const needed = lines.length * size * 0.45 + 3
+        checkNewPage(needed)
+        doc.text(lines, marginX + indent, y)
+        y += needed
+      }
+
+      const addSpacer = (h = 4) => { y += h }
+
+      // Título
+      writeLine('Tu Semana Sana', { size: 22, bold: true, color: [183, 92, 64] })
+      writeLine('Mi Plan Semanal  ·  ' + semanaLabel, { size: 13, color: [106, 124, 100] })
+      addSpacer(8)
+
+      const DIA_NOMBRES = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
       plan.dias.forEach((dia, idx) => {
-        htmlContent += `<div style="page-break-after: always; margin-bottom: 40px;">`
-        htmlContent += `<h2 style="color: #6a7c64; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">Día ${getDiaNumero(plan.semana_inicio, idx)}</h2>`
+        checkNewPage(25)
+        writeLine(`${DIA_NOMBRES[idx]} ${getDiaNumero(plan.semana_inicio, idx)}`, { size: 14, bold: true, color: [106, 124, 100] })
+        addSpacer(2)
 
         const comidas = [
-          { nombre: 'Desayuno', receta: dia.desayuno },
-          { nombre: 'Almuerzo', receta: dia.almuerzo },
-          { nombre: 'Cena', receta: dia.cena }
+          { cat: 'Desayuno', receta: dia.desayuno },
+          { cat: 'Almuerzo', receta: dia.almuerzo },
+          { cat: 'Cena', receta: dia.cena },
         ]
 
-        comidas.forEach(comida => {
-          if (!comida.receta) return
-          const r = comida.receta
+        comidas.forEach(({ cat, receta }) => {
+          if (!receta) return
+          checkNewPage(18)
+          writeLine(`${cat}: ${receta.nombre}`, { size: 12, bold: true, color: [183, 92, 64] })
+          writeLine(`${receta.tiempo_preparacion_min} min  •  ${receta.calorias_aprox} kcal`, { size: 9, color: [150, 150, 150] })
+          addSpacer(2)
 
-          htmlContent += `
-            <div style="margin-bottom: 30px;">
-              <h3 style="color: #b75c40; font-size: 18px; margin-bottom: 10px;">${comida.nombre}: ${r.nombre}</h3>
-              <p style="font-size: 14px; margin-bottom: 10px;"><em>Tiempo: ${r.tiempo_preparacion_min} min | Calorías aprox: ${r.calorias_aprox}</em></p>
-              
-              <h4 style="font-size: 14px; margin-bottom: 5px;">Ingredientes:</h4>
-              <ul style="font-size: 14px; margin-bottom: 15px; padding-left: 20px;">
-                ${(r.ingredientes as { nombre: string, cantidad: number, unidad: string }[]).map(ing => `<li>${ing.cantidad > 0 ? ing.cantidad : ''} ${ing.unidad} de ${ing.nombre}</li>`).join('')}
-              </ul>
-              
-              <h4 style="font-size: 14px; margin-bottom: 5px;">Preparación:</h4>
-              <ol style="font-size: 14px; padding-left: 20px;">
-                ${r.pasos_preparacion.map(paso => `<li style="margin-bottom: 5px;">${paso}</li>`).join('')}
-              </ol>
-            </div>
-          `
+          writeLine('Ingredientes:', { size: 10, bold: true })
+          const ings = receta.ingredientes as { nombre: string; cantidad: number; unidad: string }[]
+          ings.forEach(ing => {
+            const texto = ing.cantidad > 0 ? `${ing.cantidad} ${ing.unidad} de ${ing.nombre}` : ing.nombre
+            writeLine(`• ${texto}`, { size: 10, indent: 4 })
+          })
+          addSpacer(2)
+
+          writeLine('Preparación:', { size: 10, bold: true })
+          receta.pasos_preparacion.forEach((paso, i) => {
+            writeLine(`${i + 1}. ${paso}`, { size: 10, indent: 4 })
+          })
+          addSpacer(5)
         })
-        htmlContent += `</div>`
+
+        if (idx < plan.dias.length - 1) {
+          checkNewPage(8)
+          doc.setDrawColor(220, 220, 220)
+          doc.line(marginX, y, pageW - marginX, y)
+          y += 6
+        }
       })
 
       // Lista de compras
+      doc.addPage()
+      y = 20
+      writeLine('Lista de Compras de la Semana', { size: 18, bold: true, color: [106, 124, 100] })
+      addSpacer(6)
+
       const lista = procesarListaDeCompras(plan)
-      htmlContent += `<div style="page-break-before: always;">`
-      htmlContent += `<h2 style="color: #6a7c64; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">Lista de Compras de la Semana</h2>`
-      htmlContent += `<ul style="font-size: 14px; padding-left: 20px;">`
       lista.forEach(item => {
-        htmlContent += `<li style="margin-bottom: 8px;"><b>${item.nombre}</b>: ${item.cantidad > 0 ? item.cantidad : ''} ${item.unidad}</li>`
+        const texto = item.cantidad > 0
+          ? `${item.nombre}: ${item.cantidad} ${item.unidad}`
+          : `${item.nombre}: ${item.unidad}`
+        writeLine(`• ${texto}`, { size: 11, indent: 2 })
       })
-      htmlContent += `</ul></div>`
 
-      container.innerHTML = htmlContent
-
-      const opt = {
-        margin: 15,
-        filename: 'tu-plan-semanal.pdf',
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
-      }
-
-      await html2pdf().from(container).set(opt).save()
+      doc.save('tu-plan-semanal.pdf')
 
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Hubo un error al generar el PDF. Por favor, inténtalo de nuevo.');
+      console.error('Error generating PDF:', error)
+      alert('Hubo un error al generar el PDF. Por favor, inténtalo de nuevo.')
     } finally {
       setIsGeneratingPDF(false)
     }
