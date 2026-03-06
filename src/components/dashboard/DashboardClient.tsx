@@ -48,8 +48,11 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true)
     try {
-      const { jsPDF } = await import('jspdf')
-      const doc = new jsPDF()
+      const jsPDFModule = await import('jspdf')
+      // jsPDF v4 puede exportar como named o default según el bundler
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const JsPDF: any = jsPDFModule.jsPDF ?? jsPDFModule.default
+      const doc = new JsPDF()
 
       const pageH = doc.internal.pageSize.height
       const pageW = doc.internal.pageSize.width
@@ -72,7 +75,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
         doc.setFontSize(size)
         doc.setFont('helvetica', bold ? 'bold' : 'normal')
         doc.setTextColor(color[0], color[1], color[2])
-        const lines = doc.splitTextToSize(text, maxW - indent)
+        const lines = doc.splitTextToSize(String(text ?? ''), maxW - indent)
         const needed = lines.length * size * 0.45 + 3
         checkNewPage(needed)
         doc.text(lines, marginX + indent, y)
@@ -107,7 +110,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
           addSpacer(2)
 
           writeLine('Ingredientes:', { size: 10, bold: true })
-          const ings = receta.ingredientes as { nombre: string; cantidad: number; unidad: string }[]
+          const ings = (receta.ingredientes ?? []) as { nombre: string; cantidad: number; unidad: string }[]
           ings.forEach(ing => {
             const texto = ing.cantidad > 0 ? `${ing.cantidad} ${ing.unidad} de ${ing.nombre}` : ing.nombre
             writeLine(`• ${texto}`, { size: 10, indent: 4 })
@@ -115,8 +118,9 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
           addSpacer(2)
 
           writeLine('Preparación:', { size: 10, bold: true })
-          receta.pasos_preparacion.forEach((paso, i) => {
-            writeLine(`${i + 1}. ${paso}`, { size: 10, indent: 4 })
+          const pasos = (receta.pasos_preparacion ?? []) as string[]
+          pasos.forEach((paso, i) => {
+            writeLine(`${i + 1}. ${paso ?? ''}`, { size: 10, indent: 4 })
           })
           addSpacer(5)
         })
