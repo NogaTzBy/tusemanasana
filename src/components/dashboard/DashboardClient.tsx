@@ -4,6 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import type { PlanSemanal, Usuario } from '@/lib/types'
 import MealCard from './MealCard'
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
 
 interface DashboardClientProps {
   plan: PlanSemanal
@@ -34,6 +36,7 @@ function getSemanaLabel(semanaInicio: string): string {
 export default function DashboardClient({ plan }: DashboardClientProps) {
   const diaActualIndex = getDiaActualIndex()
   const [diaSeleccionado, setDiaSeleccionado] = useState(diaActualIndex)
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
 
   const diaComidas = plan.dias[diaSeleccionado] ?? {
     desayuno: null,
@@ -42,6 +45,39 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
   }
 
   const semanaLabel = getSemanaLabel(plan.semana_inicio)
+
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true)
+    try {
+      const element = document.getElementById('plan-container');
+      if (!element) return;
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('tu-plan-semanal.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Hubo un error al generar el PDF. Por favor, inténtalo de nuevo.');
+    } finally {
+      setIsGeneratingPDF(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-dark-bg flex flex-col">
@@ -55,7 +91,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
       </header>
 
       {/* ── Main ──────────────────────────────────────────────── */}
-      <main className="flex-1 w-full max-w-md mx-auto px-4 pb-24">
+      <main id="plan-container" className="flex-1 w-full max-w-md mx-auto px-4 pb-24">
         {/* Título */}
         <h2 className="font-serif text-[28px] font-bold leading-tight text-left pt-6 pb-2 text-[var(--color-primary-dark)] dark:text-gray-100">
           Mi Plan Semanal
@@ -75,7 +111,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
         </div>
 
         {/* Grid de días */}
-        <div className="grid grid-cols-7 gap-1 mb-8">
+        <div className="grid grid-cols-7 gap-1 mb-8" data-html2canvas-ignore="true">
           {DIAS_HEADERS.map((letra) => (
             <div key={letra} className="text-center text-xs font-bold text-gray-400 mb-2">
               {letra}
@@ -90,18 +126,25 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
                 key={index}
                 onClick={() => setDiaSeleccionado(index)}
                 className={`aspect-square flex flex-col items-center justify-center rounded-full text-sm transition-colors ${esActivo
-                    ? 'bg-sage text-white shadow-md font-medium'
-                    : esHoy
-                      ? 'font-bold text-terracotta hover:bg-cream-surface dark:hover:bg-dark-surface'
-                      : esFinDeSemana
-                        ? 'text-gray-400 hover:bg-cream-surface dark:hover:bg-dark-surface'
-                        : 'text-gray-900 dark:text-gray-100 hover:bg-cream-surface dark:hover:bg-dark-surface'
+                  ? 'bg-sage text-white shadow-md font-medium'
+                  : esHoy
+                    ? 'font-bold text-terracotta hover:bg-cream-surface dark:hover:bg-dark-surface'
+                    : esFinDeSemana
+                      ? 'text-gray-400 hover:bg-cream-surface dark:hover:bg-dark-surface'
+                      : 'text-gray-900 dark:text-gray-100 hover:bg-cream-surface dark:hover:bg-dark-surface'
                   }`}
               >
                 <span>{getDiaNumero(plan.semana_inicio, index)}</span>
               </button>
             )
           })}
+        </div>
+
+        {/* Creador de PDF: Mostrar label del día elegido solo en el PDF */}
+        <div className="hidden" data-html2canvas-show="true" style={{ display: 'none' }}>
+          <h3 className="font-serif text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
+            Día {getDiaNumero(plan.semana_inicio, diaSeleccionado)}
+          </h3>
         </div>
 
         {/* Cards de comidas */}
@@ -127,10 +170,15 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
         </div>
 
         {/* Botones de acción */}
-        <div className="flex flex-col gap-3 mt-10">
-          <button className="w-full bg-terracotta text-white py-4 px-6 rounded-full font-bold text-sm tracking-wide shadow-lg hover:bg-terracotta-dark transition-all flex items-center justify-center gap-2">
-            <span className="material-symbols-outlined">download</span>
-            DESCARGAR PLAN PDF
+        <div className="flex flex-col gap-3 mt-10" data-html2canvas-ignore="true">
+          <button
+            onClick={handleDownloadPDF}
+            disabled={isGeneratingPDF}
+            className="w-full bg-terracotta text-white py-4 px-6 rounded-full font-bold text-sm tracking-wide shadow-lg hover:bg-terracotta-dark transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+            <span className={`material-symbols-outlined ${isGeneratingPDF ? 'animate-spin' : ''}`}>
+              {isGeneratingPDF ? 'progress_activity' : 'download'}
+            </span>
+            {isGeneratingPDF ? 'GENERANDO PDF...' : 'DESCARGAR PLAN PDF'}
           </button>
           <Link
             href={`/dashboard/lista?planId=${plan.id}`}

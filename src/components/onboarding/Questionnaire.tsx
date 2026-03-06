@@ -146,9 +146,9 @@ export default function Questionnaire() {
         : true; // Multiple is optional
 
     return (
-        <div className="max-w-xl mx-auto py-10 px-6">
+        <div className="max-w-xl mx-auto py-2 md:py-10 px-6">
             {/* Progreso */}
-            <div className="mb-8">
+            <div className="mb-4 md:mb-8">
                 <div className="flex justify-between text-sm text-[var(--color-foreground)]/60 mb-2">
                     <span>Paso {currentStep + 1} de {questions.length}</span>
                     <span>{Math.round(((currentStep + 1) / questions.length) * 100)}%</span>
@@ -162,25 +162,25 @@ export default function Questionnaire() {
             </div>
 
             {/* Título de la pregunta */}
-            <h2 className="text-3xl font-serif text-[var(--color-primary-dark)] mb-8">
+            <h2 className="text-2xl md:text-3xl font-serif text-[var(--color-primary-dark)] mb-4 md:mb-8 leading-tight">
                 {question.title}
             </h2>
 
             {/* Opciones */}
-            <div className="space-y-4 mb-10">
+            <div className="space-y-2 md:space-y-4 mb-6 md:mb-10">
                 {question.options.map((option) => {
                     const selected = isSelected(option.value);
                     return (
                         <button
                             key={option.value}
                             onClick={() => handleSelect(option.value)}
-                            className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 flex items-center justify-between
+                            className={`w-full text-left p-3 md:p-5 rounded-2xl border-2 transition-all duration-200 flex items-center justify-between
                 ${selected
                                     ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
                                     : "border-[var(--color-surface)] bg-white hover:border-[var(--color-primary)]/30"
                                 }`}
                         >
-                            <span className={`text-lg ${selected ? "text-[var(--color-primary-dark)] font-medium" : "text-[var(--color-foreground)]"}`}>
+                            <span className={`text-base md:text-lg ${selected ? "text-[var(--color-primary-dark)] font-medium" : "text-[var(--color-foreground)]"}`}>
                                 {option.label}
                             </span>
                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
@@ -205,7 +205,7 @@ export default function Questionnaire() {
                 <button
                     onClick={handleNext}
                     disabled={!isCurrentAnswered && question.type === "single"}
-                    className={`px-8 py-3 rounded-full flex items-center font-medium transition-all
+                    className={`px-6 py-2 md:px-8 md:py-3 rounded-full flex items-center font-medium transition-all
             ${(!isCurrentAnswered && question.type === "single")
                             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                             : "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-dark)] shadow-md"
