@@ -45,17 +45,17 @@ export default function MealCard({ receta, categoria, diaIndex, planId }: MealCa
 
   if (!receta) {
     return (
-      <div className="bg-white dark:bg-dark-surface rounded-xl overflow-hidden shadow-card border border-gray-100 dark:border-dark-border">
-        <div className="h-48 bg-cream-surface dark:bg-dark-border flex items-center justify-center">
-          <span className="material-symbols-outlined text-gray-300 dark:text-gray-600 text-[48px]">
+      <div className="bg-white rounded-xl overflow-hidden shadow-card border border-gray-100 ">
+        <div className="h-48 bg-cream-surface flex items-center justify-center">
+          <span className="material-symbols-outlined text-gray-300 text-[48px]">
             restaurant
           </span>
         </div>
         <div className="p-5">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-300 dark:text-gray-600">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-300 ">
             {CATEGORIA_LABELS[categoria]}
           </span>
-          <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Sin receta asignada</p>
+          <p className="text-gray-400 text-sm mt-1">Sin receta asignada</p>
         </div>
       </div>
     )
@@ -63,7 +63,7 @@ export default function MealCard({ receta, categoria, diaIndex, planId }: MealCa
 
   return (
     <div
-      className="bg-white dark:bg-dark-surface rounded-xl overflow-hidden shadow-card group cursor-pointer"
+      className="bg-white rounded-xl overflow-hidden shadow-card group cursor-pointer"
       onClick={handleNavigate}
       role="button"
       tabIndex={0}
@@ -81,16 +81,16 @@ export default function MealCard({ receta, categoria, diaIndex, planId }: MealCa
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full bg-cream-surface dark:bg-dark-border flex items-center justify-center">
-            <span className="material-symbols-outlined text-gray-300 dark:text-gray-600 text-[48px]">
+          <div className="w-full h-full bg-cream-surface flex items-center justify-center">
+            <span className="material-symbols-outlined text-gray-300 text-[48px]">
               restaurant
             </span>
           </div>
         )}
 
         {/* Badge de categoría */}
-        <div className="absolute top-3 left-3 bg-white/90 dark:bg-dark-surface/90 backdrop-blur-sm px-3 py-1 rounded-full">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-500 ">
             {CATEGORIA_LABELS[categoria]}
           </span>
         </div>
@@ -99,10 +99,10 @@ export default function MealCard({ receta, categoria, diaIndex, planId }: MealCa
       {/* Contenido */}
       <div className="p-5 flex flex-col gap-3">
         <div>
-          <h3 className="text-xl font-bold font-serif text-[var(--color-foreground)] group-hover:text-[var(--color-primary-dark)] dark:text-gray-100 leading-tight transition-colors">
+          <h3 className="text-xl font-bold font-serif text-[var(--color-foreground)] group-hover:text-[var(--color-primary-dark)] leading-tight transition-colors">
             {receta.nombre}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-500 mt-1">
             {receta.calorias_aprox} kcal • {receta.tiempo_preparacion_min} min
           </p>
         </div>
@@ -110,7 +110,7 @@ export default function MealCard({ receta, categoria, diaIndex, planId }: MealCa
         <button
           onClick={handleCambiarReceta}
           disabled={isPending}
-          className="self-start inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 bg-cream-surface dark:bg-dark-border px-3 py-1.5 rounded-full hover:bg-[#e6dcd9] dark:hover:bg-dark-surface transition-colors disabled:opacity-60"
+          className="self-start inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 bg-cream-surface px-3 py-1.5 rounded-full hover:bg-[#e6dcd9] transition-colors disabled:opacity-60"
           aria-label="Cambiar receta"
         >
           <span className={`material-symbols-outlined text-[16px] ${isPending ? 'animate-spin' : ''}`}>
@@ -120,7 +120,7 @@ export default function MealCard({ receta, categoria, diaIndex, planId }: MealCa
         </button>
 
         {error && (
-          <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
+          <p className="text-xs text-red-500 ">{error}</p>
         )}
       </div>
     </div>

@@ -90,11 +90,11 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-dark-bg flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* ── Header ────────────────────────────────────────────── */}
-      <header className="flex items-center justify-between px-6 py-4 sticky top-0 z-50 bg-white/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-cream-surface dark:border-dark-border">
+      <header className="flex items-center justify-between px-6 py-4 sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-cream-surface ">
         <div className="w-10" />
-        <h1 className="font-serif text-2xl font-bold tracking-tight text-center text-[var(--color-primary-dark)] dark:text-gray-100">
+        <h1 className="font-serif text-2xl font-bold tracking-tight text-center text-[var(--color-primary-dark)] ">
           Tu Semana Sana
         </h1>
         <div className="w-10" />
@@ -103,19 +103,19 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
       {/* ── Main ──────────────────────────────────────────────── */}
       <main id="plan-container" className="flex-1 w-full max-w-md mx-auto px-4 pb-24">
         {/* Título */}
-        <h2 className="font-serif text-[28px] font-bold leading-tight text-left pt-6 pb-2 text-[var(--color-primary-dark)] dark:text-gray-100">
+        <h2 className="font-serif text-[28px] font-bold leading-tight text-left pt-6 pb-2 text-[var(--color-primary-dark)] ">
           Mi Plan Semanal
         </h2>
 
         {/* Navegación de semana */}
         <div className="flex items-center justify-between mb-6">
-          <button className="p-2 text-gray-900 dark:text-gray-100 hover:bg-cream-surface dark:hover:bg-dark-surface rounded-full transition-colors">
+          <button className="p-2 text-gray-900 hover:bg-cream-surface rounded-full transition-colors">
             <span className="material-symbols-outlined">chevron_left</span>
           </button>
-          <span className="text-base font-bold font-serif text-gray-900 dark:text-gray-200">
+          <span className="text-base font-bold font-serif text-gray-900 ">
             {semanaLabel}
           </span>
-          <button className="p-2 text-gray-900 dark:text-gray-100 hover:bg-cream-surface dark:hover:bg-dark-surface rounded-full transition-colors">
+          <button className="p-2 text-gray-900 hover:bg-cream-surface rounded-full transition-colors">
             <span className="material-symbols-outlined">chevron_right</span>
           </button>
         </div>
@@ -138,10 +138,10 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
                 className={`aspect-square flex flex-col items-center justify-center rounded-full text-sm transition-colors ${esActivo
                   ? 'bg-sage text-white shadow-md font-medium'
                   : esHoy
-                    ? 'font-bold text-terracotta hover:bg-cream-surface dark:hover:bg-dark-surface'
+                    ? 'font-bold text-terracotta hover:bg-cream-surface '
                     : esFinDeSemana
-                      ? 'text-gray-400 hover:bg-cream-surface dark:hover:bg-dark-surface'
-                      : 'text-gray-900 dark:text-gray-100 hover:bg-cream-surface dark:hover:bg-dark-surface'
+                      ? 'text-gray-400 hover:bg-cream-surface '
+                      : 'text-gray-900 hover:bg-cream-surface '
                   }`}
               >
                 <span>{getDiaNumero(plan.semana_inicio, index)}</span>
@@ -192,7 +192,7 @@ export default function DashboardClient({ plan }: DashboardClientProps) {
           </button>
           <Link
             href={`/dashboard/lista?planId=${plan.id}`}
-            className="w-full bg-white dark:bg-dark-surface border-2 border-terracotta text-terracotta py-3.5 px-6 rounded-full font-bold text-sm tracking-wide hover:bg-cream-surface dark:hover:bg-dark-border transition-all flex items-center justify-center gap-2"
+            className="w-full bg-white border-2 border-terracotta text-terracotta py-3.5 px-6 rounded-full font-bold text-sm tracking-wide hover:bg-cream-surface transition-all flex items-center justify-center gap-2"
           >
             <span className="material-symbols-outlined">shopping_basket</span>
             VER LISTA DE COMPRAS
