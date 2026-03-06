@@ -22,8 +22,8 @@ export default function Home() {
       </div>
 
       {/* Footer simple */}
-      <footer className="py-6 px-4 bg-white text-center text-[var(--color-foreground)]/80 text-sm border-t border-[var(--color-background)] mt-auto font-medium italic">
-        <p>«Recuperá tu de tiempo y dejá de estresarte pensando qué cocinar cada noche.»</p>
+      <footer className="pt-6 pb-2 px-4 bg-white text-center text-[var(--color-foreground)]/80 text-sm border-t border-[var(--color-background)] mt-auto font-medium italic">
+        <p>«Recuperá tu tiempo y dejá de estresarte pensando qué cocinar cada noche.»</p>
       </footer>
     </main>
   );
