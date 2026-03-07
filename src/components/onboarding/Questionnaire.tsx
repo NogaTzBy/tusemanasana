@@ -155,10 +155,6 @@ export default function Questionnaire() {
         );
     }
 
-    const isCurrentAnswered = question.type === "single"
-        ? !!answers[question.id]
-        : true; // Multiple is optional
-
     return (
         <div className="max-w-xl mx-auto px-6 pb-6">
             {/* Progreso */}
@@ -232,17 +228,14 @@ export default function Questionnaire() {
                     <ArrowLeft className="w-5 h-5 mr-2" /> Atrás
                 </button>
 
-                <button
-                    onClick={handleNext}
-                    disabled={!isCurrentAnswered && question.type === "single"}
-                    className={`px-6 py-2 md:px-8 md:py-3 rounded-full flex items-center font-medium transition-all
-            ${(!isCurrentAnswered && question.type === "single")
-                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                            : "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-dark)] shadow-md hover:scale-105 active:scale-95"
-                        }`}
-                >
-                    {currentStep === questions.length - 1 ? "Ver mi Plan" : "Siguiente"} <ArrowRight className="w-5 h-5 ml-2" />
-                </button>
+                {question.type === "multiple" && (
+                    <button
+                        onClick={handleNext}
+                        className="px-6 py-2 md:px-8 md:py-3 rounded-full flex items-center font-medium transition-all bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-dark)] shadow-md hover:scale-105 active:scale-95"
+                    >
+                        {currentStep === questions.length - 1 ? "Ver mi Plan" : "Siguiente"} <ArrowRight className="w-5 h-5 ml-2" />
+                    </button>
+                )}
             </div>
 
             <p className="mt-8 md:mt-12 text-center text-[var(--color-foreground)]/80 text-sm md:text-base font-medium italic animate-in fade-in duration-500">
