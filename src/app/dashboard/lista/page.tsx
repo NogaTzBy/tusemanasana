@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getPerfilUsuario, getPlanSemanal } from '@/lib/supabase/queries'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'

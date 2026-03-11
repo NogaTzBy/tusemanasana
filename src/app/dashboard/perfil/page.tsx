@@ -5,6 +5,7 @@ import BottomNav from '@/components/ui/BottomNav'
 import PerfilClient from './PerfilClient'
 
 export const metadata = { title: 'Mi Perfil | Tu Semana Sana' }
+export const dynamic = 'force-dynamic'
 
 export default async function PerfilPage() {
   const supabase = await createClient()
