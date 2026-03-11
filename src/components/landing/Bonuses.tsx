@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export function Bonuses() {
     const bonos = [
         { id: 1, title: '🎁 Emprende con recetas saludables desde casa', oldPrice: '$20.124,16', img: 'https://cdn.shopify.com/s/files/1/0676/6975/3942/files/Bono_1.png?v=1771611600' },
@@ -29,7 +31,9 @@ export function Bonuses() {
             <div className="grid grid-cols-2 gap-[15px] mb-[30px]">
                 {bonos.map(bonus => (
                     <div key={bonus.id} className="bg-white rounded-[15px] p-[12px] flex flex-col items-center text-center shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
-                        <img src={bonus.img} alt={bonus.title} className="w-full aspect-square object-cover rounded-[10px] mb-[10px]" />
+                        <div className="relative w-full aspect-square mb-[10px]">
+                            <Image src={bonus.img} alt={bonus.title} fill sizes="(max-width: 768px) 50vw, 250px" className="object-cover rounded-[10px]" />
+                        </div>
                         <h4 className="text-[12px] font-semibold text-[#1a1a1a] m-0 mb-[6px] leading-[1.2] min-h-[30px] flex items-center justify-center">
                             {bonus.title}
                         </h4>

@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export function Testimonials() {
     const testimonials = [
         {
@@ -68,8 +70,8 @@ export function Testimonials() {
                         <p className="text-[12px] leading-[1.5] text-[#444] m-0 mb-[15px] min-h-[110px] md:min-h-[90px] italic">
                             {t.text}
                         </p>
-                        <div className="w-full mb-[15px] mt-auto">
-                            <img src={t.img} className="w-full h-[160px] md:h-[200px] rounded-[12px] object-cover block bg-[#f9f9f9] border border-[#eee]" alt={t.name} />
+                        <div className="relative w-full mb-[15px] mt-auto aspect-square flex-shrink-0">
+                            <Image src={t.img} fill sizes="(max-width: 768px) 50vw, 25vw" className="rounded-[12px] object-cover bg-[#f9f9f9] border border-[#eee]" alt={t.name} />
                         </div>
                         <div className="text-[11px] text-[#27ae60] font-bold flex items-center justify-center gap-[6px] pt-[12px] border-t border-[#f5f5f5]">
                             ✓ Verificada
