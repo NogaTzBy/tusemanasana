@@ -24,7 +24,7 @@ export function TrustBadgeML() {
             rgba(255, 255, 255, 0.9) 50%,
             rgba(255, 255, 255, 0) 100%
           );
-          animation: shimmer-ml 3.5s ease-in-out infinite;
+          animation: shimmer-ml 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
           pointer-events: none;
           z-index: 20;
         }
