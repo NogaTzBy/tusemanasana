@@ -8,6 +8,8 @@ import { CheckoutButton } from "@/components/landing/CheckoutButton";
 import TestimonialWall from "@/components/onboarding/TestimonialWall";
 import { TransformacionSection } from "@/components/landing/TransformacionSection";
 import { ComoFuncionaSection } from "@/components/landing/ComoFuncionaSection";
+import { ParaQuienEsSection } from "@/components/landing/ParaQuienEsSection";
+import { QueVasALograrSection } from "@/components/landing/QueVasALograrSection";
 import { FaqAccordion } from "@/components/landing/FaqAccordion";
 
 export default function Home() {
@@ -44,9 +46,19 @@ export default function Home() {
         <CheckoutButton />
       </section>
 
-      {/* Nuevas Secciones de Texto Propuestas */}
+      {/* Secciones de Copy / Persuasión (Ordenadas según referencia) */}
       <TransformacionSection />
+      <div className="flex justify-center -mt-6 relative z-10 pb-8">
+        <CheckoutButton text="QUIERO MI PLAN DE COMIDAS AHORA" />
+      </div>
+
+      <QueVasALograrSection />
+      <ParaQuienEsSection />
       <ComoFuncionaSection />
+
+      <div className="flex justify-center py-8 relative z-10 bg-white">
+        <CheckoutButton text="SÍ, QUIERO EMPEZAR HOY MISMO" />
+      </div>
 
       {/* Bonos */}
       <section className="bg-gray-50 border-y border-gray-100">
