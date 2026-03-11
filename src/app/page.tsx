@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { PromoBanner } from "@/components/landing/PromoBanner";
 import { TrustBadgeML } from "@/components/landing/TrustBadgeML";
 import { PaymentIcons } from "@/components/landing/PaymentIcons";
@@ -14,12 +15,16 @@ export default function Home() {
 
       {/* Sección principal (Hero) */}
       <section className="w-full text-center px-4 pt-4 pb-8 max-w-lg mx-auto">
-        {/* Placeholder de imagen de Hero (basado en HTML proporcionado) */}
-        <div className="w-full aspect-[2/3] max-w-[400px] mx-auto bg-gray-100 rounded-2xl mb-6 relative overflow-hidden">
-          {/* Acá va la imagen Portada-1-_1_1.webp */}
-          <div className="absolute inset-0 flex items-center justify-center text-gray-400 p-4 border-2 border-dashed border-gray-300 rounded-2xl">
-            [Imagen Hero: Portada Principal]
-          </div>
+        {/* Imagen principal (Hero / Header) */}
+        <div className="w-full mx-auto relative flex justify-center mb-6">
+          <Image
+            src="/imagenes/header.png"
+            alt="Tu semana sana - Plan semanal, recetas y bonos"
+            width={720}
+            height={1280}
+            className="w-full h-auto object-cover md:rounded-2xl"
+            priority
+          />
         </div>
 
         <TrustBadgeML />
