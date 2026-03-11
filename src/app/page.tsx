@@ -13,20 +13,20 @@ export default function Home() {
     <main className="bg-white min-h-screen pb-[60px] font-sans">
       <PromoBanner />
 
-      {/* Sección principal (Hero) */}
-      <section className="w-full text-center px-4 pt-4 pb-8 max-w-lg mx-auto">
-        {/* Imagen principal (Hero / Header) */}
-        <div className="w-full mx-auto relative flex justify-center mb-6">
-          <Image
-            src="/imagenes/header.png"
-            alt="Tu semana sana - Plan semanal, recetas y bonos"
-            width={720}
-            height={1280}
-            className="w-full h-auto object-cover md:rounded-2xl"
-            priority
-          />
-        </div>
+      {/* Imagen principal (Hero / Header) sin márgenes ni padding para ocupar el 100% de la pantalla */}
+      <div className="w-full relative flex justify-center">
+        <Image
+          src="/imagenes/header.png"
+          alt="Tu semana sana - Plan semanal, recetas y bonos"
+          width={720}
+          height={1280}
+          className="w-full h-auto object-cover"
+          priority
+        />
+      </div>
 
+      {/* Sección principal (Contenido Posterior al Hero) */}
+      <section className="w-full text-center px-4 pt-4 pb-8 max-w-lg mx-auto">
         <TrustBadgeML />
         <CheckoutButton />
         <PaymentIcons />
