@@ -67,10 +67,10 @@ export default function TestimonialWall() {
     return (
         <section className="mt-6 md:mt-12 w-full max-w-full overflow-hidden pb-16">
             <div className="text-center mb-8 md:mb-10 px-4">
-                <h2 className="text-2xl md:text-3xl font-serif text-[var(--color-primary-dark)]">
-                    Ya son más de 12.000 mujeres comiendo rico y sano
+                <h2 className="text-[26px] md:text-[34px] font-black text-black my-[10px] tracking-[-1.2px] leading-[1.1]">
+                    Lo que dicen quienes <span className="text-[#52b043]">ya lo usan</span>
                 </h2>
-                <p className="text-[var(--color-foreground)]/60 mt-2 text-sm md:text-base">
+                <p className="text-[var(--color-foreground)]/60 mt-2 text-sm md:text-base max-w-[650px] mx-auto font-medium">
                     Mira lo que dicen las que ya dieron el paso.
                 </p>
             </div>

@@ -6,28 +6,24 @@ import { ChevronDown } from "lucide-react";
 export function FaqAccordion() {
     const faqs = [
         {
-            q: "¿Qué recibo al comprar este libro?",
-            a: "Recibes un ebook digital en formato PDF que llega directamente a tu correo una vez confirmado el pago. Incluye **más de 1000 recetas saludables**, sin azúcar ni harinas refinadas, pensadas para mejorar tu alimentación de forma simple y sostenida. Además, accedes a **10 regalos digitales** con recetarios temáticos, guías prácticas y contenido extra para acompañarte en el cambio."
+            q: "¿Cómo funciona la personalización?",
+            a: "La IA te hace preguntas sobre tus gustos, restricciones alimentarias, tiempo de cocina y preferencias de tu familia. Con eso genera planes **100% adaptados a vos**."
         },
         {
-            q: "¿Es realmente fácil seguir las recetas?",
-            a: "Sí. El contenido está diseñado para que cualquier persona pueda aplicarlo, incluso sin experiencia previa en la cocina. Las recetas están explicadas paso a paso, con ingredientes accesibles y preparaciones claras, para que puedas cocinar sin complicarte y obtener buenos resultados desde el inicio."
+            q: "¿Puedo cambiar recetas si alguna no me gusta?",
+            a: "Sí. Podés regenerar cualquier comida con un click y la app te sugiere alternativas."
         },
         {
-            q: "¿Cuánto tiempo tengo para descargar el libro?",
-            a: "El ebook se envía de forma automática a tu correo apenas se confirma el pago. Puedes descargarlo y guardarlo en tu celular, tablet o computadora, **sin límite de tiempo**."
+            q: "¿Funciona si tengo restricciones alimentarias?",
+            a: "Sí. Podés indicar si sos vegetariana, vegana, sin gluten, sin lactosa, keto, etc."
         },
         {
-            q: "¿Qué pasa si no entiendo alguna parte del contenido?",
-            a: "Puedes escribirnos por mail o mensaje y te ayudamos. Queremos que aproveches el libro al máximo y que puedas aplicar las recetas y recomendaciones con confianza."
+            q: "¿Es difícil de usar?",
+            a: "No. Es tan simple como responder unas preguntas y recibir tu plan. Todo en menos de 1 minuto."
         },
         {
-            q: "¿Necesito experiencia previa para usar este libro?",
-            a: "No. Está pensado tanto para personas que recién empiezan como para quienes ya cocinan y quieren comer más saludable. Todo está explicado de manera simple, práctica y fácil de adaptar a tu rutina."
-        },
-        {
-            q: "¿Por qué debería comprar este libro en lugar de buscar recetas gratis en internet?",
-            a: "Porque este libro te ahorra tiempo, errores y frustraciones. En lugar de buscar recetas sueltas o poco claras, tienes todo en un solo lugar: **organizado, probado y con recetas que funcionan**. No solo aprendes qué cocinar, sino también cómo sostener una alimentación saludable en el día a día, con ideas reales y fáciles de aplicar."
+            q: "¿Incluye lista de compras?",
+            a: "Sí. La app genera automáticamente la lista con todo lo que necesitás para la semana."
         }
     ];
 

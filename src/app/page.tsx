@@ -5,7 +5,9 @@ import { PaymentIcons } from "@/components/landing/PaymentIcons";
 import { Guarantees } from "@/components/landing/Guarantees";
 import { Bonuses } from "@/components/landing/Bonuses";
 import { CheckoutButton } from "@/components/landing/CheckoutButton";
-import { Testimonials } from "@/components/landing/Testimonials";
+import TestimonialWall from "@/components/onboarding/TestimonialWall";
+import { TransformacionSection } from "@/components/landing/TransformacionSection";
+import { ComoFuncionaSection } from "@/components/landing/ComoFuncionaSection";
 import { FaqAccordion } from "@/components/landing/FaqAccordion";
 
 export default function Home() {
@@ -42,6 +44,10 @@ export default function Home() {
         <CheckoutButton />
       </section>
 
+      {/* Nuevas Secciones de Texto Propuestas */}
+      <TransformacionSection />
+      <ComoFuncionaSection />
+
       {/* Bonos */}
       <section className="bg-gray-50 border-y border-gray-100">
         <div className="max-w-4xl mx-auto py-8">
@@ -51,9 +57,11 @@ export default function Home() {
       </section>
 
       {/* Testimonios */}
-      <section className="py-8">
-        <Testimonials />
-        <CheckoutButton text="SI, QUIERO EMPEZAR HOY MISMO" />
+      <section className="py-8 bg-white">
+        <TestimonialWall />
+        <div className="flex justify-center mt-[-30px] relative z-10 pb-[20px]">
+          <CheckoutButton text="SI, QUIERO EMPEZAR HOY MISMO" />
+        </div>
       </section>
 
       {/* FAQ */}
