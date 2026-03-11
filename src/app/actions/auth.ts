@@ -43,7 +43,7 @@ export async function signUpAction(formData: FormData) {
                 if (signInError) {
                     return redirect('/registro?message=Error al iniciar sesión. Intentá de nuevo.')
                 }
-                return redirect('/dashboard')
+                return redirect('/onboarding/cuestionario')
             }
         }
         const msg = error.message.toLowerCase()
@@ -83,5 +83,5 @@ export async function signUpAction(formData: FormData) {
         }
     }
 
-    return redirect('/dashboard')
+    return redirect('/onboarding/cuestionario')
 }

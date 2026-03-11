@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
-
-
+import { saveProfileData } from '@/app/actions/perfil';
 
 type Question = {
     id: string;
@@ -126,21 +125,26 @@ export default function Questionnaire() {
         }
     };
 
-    const finishOnboarding = () => {
+    const finishOnboarding = async () => {
         setIsProcessing(true);
-        if (typeof window !== 'undefined') {
-            const finalAnswers = { ...answers };
-            if (otherExclusion.trim() !== "") {
-                const exc = (finalAnswers["exclusiones"] as string[]) || [];
-                if (exc.includes("otro")) {
-                    finalAnswers["exclusiones"] = [...exc.filter(e => e !== "otro"), `Otro: ${otherExclusion}`];
-                }
+        const finalAnswers = { ...answers };
+        if (otherExclusion.trim() !== "") {
+            const exc = (finalAnswers["exclusiones"] as string[]) || [];
+            if (exc.includes("otro")) {
+                finalAnswers["exclusiones"] = [...exc.filter(e => e !== "otro"), `Otro: ${otherExclusion}`];
             }
-            localStorage.setItem('tu_semana_sana_respuestas', JSON.stringify(finalAnswers));
         }
-        setTimeout(() => {
-            window.location.href = "/onboarding/resumen";
-        }, 1500);
+
+        try {
+            const result = await saveProfileData(finalAnswers);
+            if (result?.error) {
+                console.error(result.error);
+                setIsProcessing(false);
+            }
+        } catch (e) {
+            console.error(e);
+            setIsProcessing(false);
+        }
     };
 
     if (isProcessing) {
