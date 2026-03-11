@@ -18,7 +18,7 @@ export default function Home() {
       {/* Imagen principal (Hero / Header) sin márgenes ni padding para ocupar el 100% de la pantalla */}
       <div className="w-full relative flex justify-center">
         <Image
-          src="/imagenes/header.png"
+          src="/imagenes/header3.png"
           alt="Tu semana sana - Plan semanal, recetas y bonos"
           width={720}
           height={1280}
