@@ -1,27 +1,23 @@
 import Image from "next/image";
 import { PromoBanner } from "@/components/landing/PromoBanner";
-import { TrustBadgeML } from "@/components/landing/TrustBadgeML";
-import { PaymentIcons } from "@/components/landing/PaymentIcons";
-import { Guarantees } from "@/components/landing/Guarantees";
-import { Bonuses } from "@/components/landing/Bonuses";
-import { CheckoutButton } from "@/components/landing/CheckoutButton";
 import TestimonialWall from "@/components/onboarding/TestimonialWall";
-import { TransformacionSection } from "@/components/landing/TransformacionSection";
-import { ComoFuncionaSection } from "@/components/landing/ComoFuncionaSection";
-import { ParaQuienEsSection } from "@/components/landing/ParaQuienEsSection";
-import { QueVasALograrSection } from "@/components/landing/QueVasALograrSection";
+import ImageCarousel from "@/components/onboarding/ImageCarousel";
+import ParaVosSection from "@/components/onboarding/ParaVosSection";
+import LogrosSection from "@/components/onboarding/LogrosSection";
+import ProductHero from "@/components/onboarding/ProductHero";
 import { FaqAccordion } from "@/components/landing/FaqAccordion";
 
 export default function Home() {
   return (
-    <main className="bg-white min-h-screen pb-[60px] font-sans">
+    <main className="bg-[var(--color-background)] min-h-screen font-sans">
+      {/* Countdown de oferta */}
       <PromoBanner />
 
-      {/* Imagen principal (Hero / Header) sin márgenes ni padding para ocupar el 100% de la pantalla */}
+      {/* Header / imagen principal — ocupa 100% del ancho */}
       <div className="w-full relative flex justify-center">
         <Image
           src="/imagenes/header3.png"
-          alt="Tu semana sana - Plan semanal, recetas y bonos"
+          alt="Tu Semana Sana - Plan semanal personalizado"
           width={720}
           height={1280}
           className="w-full h-auto object-cover"
@@ -29,65 +25,24 @@ export default function Home() {
         />
       </div>
 
-      {/* Sección principal (Contenido Posterior al Hero) */}
-      <section className="w-full text-center px-4 pt-4 pb-8 max-w-lg mx-auto">
-        <TrustBadgeML />
-        <CheckoutButton />
-        <PaymentIcons />
-        <Guarantees />
+      {/* Sección 1: Esta app es para vos si... */}
+      <ParaVosSection />
 
-        {/* Placeholder de segunda imagen */}
-        <div className="w-full aspect-[2/3] max-w-[400px] mx-auto bg-gray-100 rounded-2xl my-8 relative overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center text-gray-400 p-4 border-2 border-dashed border-gray-300 rounded-2xl">
-            [Imagen: Plantillas Ebook]
-          </div>
-        </div>
+      {/* Sección 2: ¿Qué vas a lograr? */}
+      <LogrosSection />
 
-        <CheckoutButton />
-      </section>
-
-      {/* Secciones de Copy / Persuasión (Ordenadas según referencia) */}
-      <TransformacionSection />
-      <div className="flex justify-center -mt-6 relative z-10 pb-8">
-        <CheckoutButton text="QUIERO MI PLAN DE COMIDAS AHORA" />
-      </div>
-
-      <QueVasALograrSection />
-      <ParaQuienEsSection />
-      <ComoFuncionaSection />
-
-      <div className="flex justify-center py-8 relative z-10 bg-white">
-        <CheckoutButton text="SÍ, QUIERO EMPEZAR HOY MISMO" />
-      </div>
-
-      {/* Bonos */}
-      <section className="bg-gray-50 border-y border-gray-100">
-        <div className="max-w-4xl mx-auto py-8">
-          <Bonuses />
-          <CheckoutButton />
-        </div>
-      </section>
+      {/* Producto con precio + CTA */}
+      <ProductHero mode="purchase" />
 
       {/* Testimonios */}
-      <section className="py-8 bg-white">
-        <TestimonialWall />
-        <div className="flex justify-center mt-[-30px] relative z-10 pb-[20px]">
-          <CheckoutButton text="SI, QUIERO EMPEZAR HOY MISMO" />
-        </div>
-      </section>
+      <TestimonialWall />
+
+      {/* Carrusel de fotos */}
+      <ImageCarousel />
 
       {/* FAQ */}
-      <section className="bg-white py-12">
+      <section className="bg-white py-10">
         <FaqAccordion />
-      </section>
-
-      {/* Cierre */}
-      <section className="bg-gray-50 py-12 text-center px-4 border-t border-gray-100">
-        <h2 className="text-2xl md:text-3xl font-bold mb-6 font-serif text-[var(--color-primary-dark)]">
-          Tu plan semanal está listo para cambiarte la vida
-        </h2>
-        <CheckoutButton text="QUIERO MI PLAN DE COMIDAS AHORA" />
-        <PaymentIcons />
       </section>
     </main>
   );
