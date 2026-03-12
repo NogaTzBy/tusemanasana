@@ -12,8 +12,19 @@ export function PromoBanner() {
         const diasSemana = ["DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO"];
         setDiaActual(diasSemana[new Date().getDay()]);
 
+        // Mismo key que CountdownTimer para que ambos muestren el mismo tiempo
+        const saved = localStorage.getItem('tss_countdown');
+        if (saved) {
+            const parsed = parseInt(saved, 10);
+            if (parsed > 0) setTiempoRestante(parsed);
+        }
+
         const timer = setInterval(() => {
-            setTiempoRestante((prev) => (prev > 0 ? prev - 1 : 10 * 60));
+            setTiempoRestante((prev) => {
+                const next = prev > 0 ? prev - 1 : 15 * 60;
+                localStorage.setItem('tss_countdown', next.toString());
+                return next;
+            });
         }, 1000);
 
         return () => clearInterval(timer);
