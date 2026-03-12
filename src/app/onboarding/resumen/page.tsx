@@ -18,15 +18,15 @@ export default function ResumenPage() {
                 </div>
             </header>
 
-            {/* Hero principal */}
-            <ProductHero />
+            {/* 1. Mostrar producto (imagen + título + estrellas, sin precio) */}
+            <ProductHero mode="showcase" />
 
-            {/* Secciones de dolor y logros */}
+            {/* 2. Secciones de dolor y logros */}
             <ParaVosSection />
             <LogrosSection />
 
-            {/* Hero repetido (compacto, sin countdown) */}
-            <ProductHero compact />
+            {/* 3. Producto completo con countdown + precio + CTA */}
+            <ProductHero mode="purchase" />
 
             <TestimonialWall />
             <ImageCarousel />
