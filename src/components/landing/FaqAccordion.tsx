@@ -7,11 +7,11 @@ export function FaqAccordion() {
     const faqs = [
         {
             q: "¿Cómo funciona la personalización?",
-            a: "La IA te hace preguntas sobre tus gustos, restricciones alimentarias, tiempo de cocina y preferencias de tu familia. Con eso genera planes 100% adaptados a vos."
+            a: "Te hacemos preguntas sobre tus gustos, restricciones alimentarias, tiempo de cocina y preferencias de tu familia. Con eso generamos un plan 100% adaptado a vos."
         },
         {
             q: "¿Puedo cambiar recetas si alguna no me gusta?",
-            a: "Sí. Podés regenerar cualquier comida con un click y la app te sugiere alternativas."
+            a: "Sí. Podés regenerar cualquier comida con un click y te sugerimos alternativas."
         },
         {
             q: "¿Funciona si tengo restricciones alimentarias?",
@@ -23,7 +23,7 @@ export function FaqAccordion() {
         },
         {
             q: "¿Incluye lista de compras?",
-            a: "Sí. La app genera automáticamente la lista con todo lo que necesitás para la semana."
+            a: "Sí. Generamos automáticamente la lista con todo lo que necesitás para la semana."
         }
     ];
 
