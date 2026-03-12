@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import CountdownTimer from './CountdownTimer'
+import { TrustBadgeML } from '@/components/landing/TrustBadgeML'
 
 interface ProductHeroProps {
     /** showcase = solo imagen + título (arriba de la página)
@@ -51,17 +52,20 @@ export default function ProductHero({ mode = 'showcase' }: ProductHeroProps) {
                                 <span className="bg-red-500 text-white text-xs font-black px-2.5 py-1 rounded-full">
                                     70% OFF
                                 </span>
-                                <span className="text-gray-400 line-through text-sm">$196.000 ARS</span>
+                                <span className="text-gray-400 line-through text-sm">$69.990 ARS</span>
                             </div>
                             <p className="text-3xl md:text-4xl font-black text-black mb-1">
                                 $19.900 <span className="text-lg font-bold text-gray-500">ARS</span>
                             </p>
-                            <p className="text-xs text-gray-500 mb-5">Pago único · Sin suscripción</p>
+                            <p className="text-xs text-gray-500 mb-4">Pago único · Sin suscripción</p>
 
-                            {/* Trust signal */}
-                            <p className="text-sm font-medium text-gray-700 mb-4 flex items-center gap-2">
-                                <span className="text-green-500 text-base">✓</span>
-                                Recibes todo al <strong>instante</strong> por correo electrónico
+                            {/* Trust signals */}
+                            <p className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                                <span className="text-green-500">✅</span>
+                                <em>Recibes tu <strong>plan semanal</strong> al instante</em>
+                            </p>
+                            <p className="text-sm font-bold text-orange-600 mb-5 flex items-center gap-2">
+                                <span>💣</span> Últimos <strong>3</strong> Cupos en Oferta!
                             </p>
 
                             {/* Botón CTA */}
@@ -72,15 +76,19 @@ export default function ProductHero({ mode = 'showcase' }: ProductHeroProps) {
                                 COMPRAR AHORA
                             </Link>
 
-                            {/* Métodos de pago */}
-                            <div className="relative w-full h-8">
+                            {/* Mercado Líder Platinum */}
+                            <TrustBadgeML />
+
+                            {/* Métodos de pago — ancho completo */}
+                            <div className="w-full mt-2">
                                 <Image
                                     src="/imagenes/metodos-pago.png"
                                     alt="Métodos de pago"
-                                    fill
-                                    sizes="300px"
+                                    width={600}
+                                    height={60}
+                                    sizes="100vw"
                                     quality={80}
-                                    className="object-contain"
+                                    className="w-full h-auto object-contain"
                                 />
                             </div>
                         </>
