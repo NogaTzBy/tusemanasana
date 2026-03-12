@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 
 export default function CountdownTimer() {
-    const [timeLeft, setTimeLeft] = useState(15 * 60) // 15 minutos en segundos
+    const [timeLeft, setTimeLeft] = useState(10 * 60) // 10 minutos en segundos
 
     useEffect(() => {
         // Evitamos problemas de hidratación en el primer render

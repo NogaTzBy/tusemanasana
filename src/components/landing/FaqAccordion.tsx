@@ -7,7 +7,7 @@ export function FaqAccordion() {
     const faqs = [
         {
             q: "¿Cómo funciona la personalización?",
-            a: "La IA te hace preguntas sobre tus gustos, restricciones alimentarias, tiempo de cocina y preferencias de tu familia. Con eso genera planes **100% adaptados a vos**."
+            a: "La IA te hace preguntas sobre tus gustos, restricciones alimentarias, tiempo de cocina y preferencias de tu familia. Con eso genera planes 100% adaptados a vos."
         },
         {
             q: "¿Puedo cambiar recetas si alguna no me gusta?",
@@ -60,12 +60,9 @@ export function FaqAccordion() {
                             <div
                                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[500px] opacity-100 pb-[20px]' : 'max-h-0 opacity-0'}`}
                             >
-                                <p
-                                    className="text-[15px] text-[#444] leading-[1.6] pl-[28px] m-0"
-                                    dangerouslySetInnerHTML={{
-                                        __html: faq.a.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')
-                                    }}
-                                />
+                                <p className="text-[15px] text-[#444] leading-[1.6] pl-[28px] m-0">
+                                    {faq.a}
+                                </p>
                             </div>
                         </div>
                     );

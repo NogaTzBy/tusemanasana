@@ -10,7 +10,7 @@ const ITEMS = [
 function RedBadge() {
     return (
         <svg width="26" height="26" viewBox="0 0 26 26" fill="none" className="shrink-0 mt-0.5">
-            <rect x="1" y="1" width="24" height="24" rx="7" fill="#e05252" />
+            <rect x="1" y="1" width="24" height="24" rx="7" fill="#52b043" />
             <path d="M8 13.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     )

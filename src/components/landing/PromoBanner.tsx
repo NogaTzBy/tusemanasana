@@ -21,7 +21,7 @@ export function PromoBanner() {
 
         const timer = setInterval(() => {
             setTiempoRestante((prev) => {
-                const next = prev > 0 ? prev - 1 : 15 * 60;
+                const next = prev > 0 ? prev - 1 : 10 * 60;
                 localStorage.setItem('tss_countdown', next.toString());
                 return next;
             });
