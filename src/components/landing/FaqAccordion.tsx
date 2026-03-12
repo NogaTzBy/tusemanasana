@@ -34,7 +34,7 @@ export function FaqAccordion() {
     };
 
     return (
-        <section className="max-w-[800px] mx-auto px-[15px] pt-[20px] pb-[40px] font-sans">
+        <section className="max-w-[800px] mx-auto px-[15px] pt-[20px] pb-0 font-sans">
             <h2 className="text-center text-[28px] md:text-[36px] font-medium text-black mb-[30px] leading-tight">
                 Preguntas frecuentes
             </h2>

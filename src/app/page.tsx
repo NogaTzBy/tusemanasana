@@ -41,7 +41,7 @@ export default function Home() {
       <ImageCarousel />
 
       {/* FAQ */}
-      <section className="bg-white py-10">
+      <section className="bg-white pt-10">
         <FaqAccordion />
       </section>
     </main>
