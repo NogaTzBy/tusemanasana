@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import { useState } from 'react'
 
 const PARAGRAPHS = [
     "Durante años viví con la misma culpa de siempre. Llegaba a casa agotada, abría la heladera y me quedaba parada ahí, mirando adentro, sin la menor idea de qué cocinar. Terminaba pidiendo delivery, calentando lo que había sobrado, o armando algo rápido que sabía que no era lo que mi familia necesitaba.",
@@ -17,6 +20,8 @@ const PARAGRAPHS = [
 ]
 
 export default function FounderStory() {
+    const [expanded, setExpanded] = useState(false)
+
     return (
         <section className="max-w-2xl mx-auto px-4 py-10">
             <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
@@ -43,19 +48,40 @@ export default function FounderStory() {
                         <span className="text-[#52b043]">y cómo me cambió la vida</span>
                     </h2>
 
-                    {/* Texto */}
-                    <div className="space-y-4">
-                        {PARAGRAPHS.map((p, i) => (
-                            <p key={i} className="text-[15px] md:text-[16px] text-gray-700 leading-relaxed">
-                                {p}
-                            </p>
-                        ))}
+                    {/* Texto con desplegable */}
+                    <div className="relative">
+                        <div className={`space-y-4 overflow-hidden transition-all duration-500 ${expanded ? 'max-h-[2000px]' : 'max-h-[120px]'}`}>
+                            {PARAGRAPHS.map((p, i) => (
+                                <p key={i} className="text-[15px] md:text-[16px] text-gray-700 leading-relaxed">
+                                    {p}
+                                </p>
+                            ))}
+                        </div>
+
+                        {/* Fade + botón cuando está colapsado */}
+                        {!expanded && (
+                            <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-white to-transparent" />
+                        )}
                     </div>
 
-                    {/* Firma */}
-                    <p className="mt-8 text-[15px] font-semibold text-gray-800 italic border-t border-gray-100 pt-6">
-                        — María Lorena
-                    </p>
+                    {/* Botón ver más / ver menos */}
+                    <button
+                        onClick={() => setExpanded(!expanded)}
+                        className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-[#52b043] text-[#52b043] font-bold text-[15px] hover:bg-[#52b043] hover:text-white transition-colors"
+                    >
+                        {expanded ? (
+                            <>Cerrar historia <span className="text-lg">↑</span></>
+                        ) : (
+                            <>Leer historia completa <span className="text-lg">↓</span></>
+                        )}
+                    </button>
+
+                    {/* Firma — solo visible cuando expandido */}
+                    {expanded && (
+                        <p className="mt-8 text-[15px] font-semibold text-gray-800 italic border-t border-gray-100 pt-6">
+                            — María Lorena
+                        </p>
+                    )}
                 </div>
             </div>
         </section>
