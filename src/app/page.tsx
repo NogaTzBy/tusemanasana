@@ -7,6 +7,7 @@ import LogrosSection from "@/components/onboarding/LogrosSection";
 import ProductHero from "@/components/onboarding/ProductHero";
 import { FaqAccordion } from "@/components/landing/FaqAccordion";
 import FounderStory from "@/components/landing/FounderStory";
+import CtaBanner from "@/components/landing/CtaBanner";
 
 export default function Home() {
   return (
@@ -38,6 +39,9 @@ export default function Home() {
       {/* Historia de María Lorena */}
       <FounderStory />
 
+      {/* CTA 1 — después de la historia */}
+      <CtaBanner />
+
       {/* Testimonios */}
       <TestimonialWall />
 
@@ -48,6 +52,9 @@ export default function Home() {
       <section className="bg-white pt-10">
         <FaqAccordion />
       </section>
+
+      {/* CTA 2 — final de página */}
+      <CtaBanner />
     </main>
   );
 }
