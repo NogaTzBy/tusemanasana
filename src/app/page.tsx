@@ -54,7 +54,9 @@ export default function Home() {
       </section>
 
       {/* CTA 2 — final de página */}
-      <ProductHero mode="purchase" />
+      <div className="-mb-8">
+        <ProductHero mode="purchase" />
+      </div>
     </main>
   );
 }
