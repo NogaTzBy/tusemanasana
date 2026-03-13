@@ -18,42 +18,47 @@ const PARAGRAPHS = [
 
 export default function FounderStory() {
     return (
-        <section className="max-w-2xl mx-auto px-5 py-12">
-            {/* Header con foto */}
-            <div className="flex items-center gap-4 mb-8">
-                <div className="relative w-[80px] h-[80px] rounded-full overflow-hidden shrink-0 border-2 border-[#52b043]">
+        <section className="max-w-2xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+
+                {/* Foto grande */}
+                <div className="relative w-full aspect-[4/3]">
                     <Image
                         src="/imagenes/maria.jpg"
                         alt="María Lorena"
                         fill
-                        sizes="80px"
+                        sizes="(max-width: 768px) 100vw, 672px"
                         quality={80}
-                        className="object-cover"
+                        className="object-cover object-top"
                     />
                 </div>
-                <div>
-                    <p className="text-[18px] font-black text-black leading-tight">María Lorena</p>
-                    <p className="text-sm text-gray-500">44 años · mamá de 2 · creadora de Tu Semana Sana</p>
+
+                <div className="p-6 md:p-8">
+                    {/* Nombre y descripción */}
+                    <p className="text-[20px] font-black text-black leading-tight">María Lorena</p>
+                    <p className="text-sm text-gray-500 mt-1 mb-6">44 años · mamá de 2 · creadora de Tu Semana Sana</p>
+
+                    {/* Título */}
+                    <h2 className="text-[20px] md:text-[24px] font-black text-black leading-tight mb-6 tracking-[-0.5px] border-t border-gray-100 pt-6">
+                        Por qué creé esto —{' '}
+                        <span className="text-[#52b043]">y cómo me cambió la vida</span>
+                    </h2>
+
+                    {/* Texto */}
+                    <div className="space-y-4">
+                        {PARAGRAPHS.map((p, i) => (
+                            <p key={i} className="text-[15px] md:text-[16px] text-gray-700 leading-relaxed">
+                                {p}
+                            </p>
+                        ))}
+                    </div>
+
+                    {/* Firma */}
+                    <p className="mt-8 text-[15px] font-semibold text-gray-800 italic border-t border-gray-100 pt-6">
+                        — María Lorena
+                    </p>
                 </div>
             </div>
-
-            {/* Título */}
-            <h2 className="text-[22px] md:text-[26px] font-black text-black leading-tight mb-6 tracking-[-0.5px]">
-                Por qué creé esto —<br />
-                <span className="text-[#52b043]">y cómo me cambió la vida</span>
-            </h2>
-
-            {/* Texto */}
-            <div className="space-y-4">
-                {PARAGRAPHS.map((p, i) => (
-                    <p key={i} className="text-[15px] md:text-[16px] text-gray-700 leading-relaxed">
-                        {p}
-                    </p>
-                ))}
-            </div>
-
-            {/* Firma */}
-            <p className="mt-8 text-[15px] font-semibold text-gray-800 italic">— María Lorena</p>
         </section>
     )
 }
