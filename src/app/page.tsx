@@ -6,6 +6,7 @@ import ParaVosSection from "@/components/onboarding/ParaVosSection";
 import LogrosSection from "@/components/onboarding/LogrosSection";
 import ProductHero from "@/components/onboarding/ProductHero";
 import { FaqAccordion } from "@/components/landing/FaqAccordion";
+import FounderStory from "@/components/landing/FounderStory";
 
 export default function Home() {
   return (
@@ -16,7 +17,7 @@ export default function Home() {
       {/* Header / imagen principal — ocupa 100% del ancho */}
       <div className="w-full relative flex justify-center">
         <Image
-          src="/imagenes/header3.png"
+          src="/imagenes/header4.jpg"
           alt="Tu Semana Sana - Plan semanal personalizado"
           width={720}
           height={1280}
@@ -33,6 +34,9 @@ export default function Home() {
 
       {/* Producto con precio + CTA */}
       <ProductHero mode="purchase" />
+
+      {/* Historia de María Lorena */}
+      <FounderStory />
 
       {/* Testimonios */}
       <TestimonialWall />
