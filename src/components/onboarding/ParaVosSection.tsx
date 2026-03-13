@@ -5,6 +5,7 @@ const ITEMS = [
     { bold: 'Te aburrís de cocinar', rest: ' siempre lo mismo y querés variedad sin complicarte.' },
     { bold: 'Vas al súper sin lista', rest: ' y siempre te olvidás algo o comprás de más.' },
     { bold: 'Sentís culpa', rest: ' por no darle comida más saludable a tu familia.' },
+    { bold: 'Cocinás para vos y tu pareja', rest: ' y se te acabaron las ideas para que no sea siempre lo mismo.' },
 ]
 
 function RedBadge() {
