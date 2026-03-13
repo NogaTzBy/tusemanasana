@@ -91,6 +91,21 @@ export default function ProductHero({ mode = 'showcase' }: ProductHeroProps) {
                                     className="w-full h-auto object-contain"
                                 />
                             </div>
+
+                            {/* Garantía 30 días */}
+                            <div className="flex items-center gap-3 mt-4 bg-gray-50 rounded-xl px-4 py-3 border border-gray-100">
+                                <Image
+                                    src="https://cdn.shopify.com/s/files/1/0713/3744/3581/files/download_18_ba1d13ed-36eb-45ea-97cc-211019bfa911.png?v=1757267383"
+                                    alt="Garantía 30 días"
+                                    width={52}
+                                    height={52}
+                                    className="shrink-0"
+                                />
+                                <div>
+                                    <p className="text-[#52b043] font-black text-[15px] leading-tight">Garantía de Satisfacción</p>
+                                    <p className="text-gray-700 text-[13px]"><strong>30 días</strong> para probar sin riesgo alguno</p>
+                                </div>
+                            </div>
                         </>
                     )}
                 </div>

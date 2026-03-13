@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
         hostname: 'pixabay.com',
         pathname: '/get/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.shopify.com',
+      },
     ],
   },
 };
