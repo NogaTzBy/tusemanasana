@@ -54,7 +54,7 @@ export default function Home() {
       </section>
 
       {/* CTA 2 — final de página */}
-      <CtaBanner withExtras />
+      <ProductHero mode="purchase" />
     </main>
   );
 }
