@@ -20,8 +20,8 @@ export default function Home() {
         <Image
           src="/imagenes/header4.jpg"
           alt="Tu Semana Sana - Plan semanal personalizado"
-          width={720}
-          height={1280}
+          width={768}
+          height={1376}
           className="w-full h-auto object-cover"
           priority
         />
