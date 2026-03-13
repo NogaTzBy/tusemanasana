@@ -22,16 +22,15 @@ export default function FounderStory() {
             <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
 
                 {/* Foto grande */}
-                <div className="relative w-full aspect-[4/3]">
-                    <Image
-                        src="/imagenes/maria.jpg"
-                        alt="María Lorena"
-                        fill
-                        sizes="(max-width: 768px) 100vw, 672px"
-                        quality={80}
-                        className="object-cover object-top"
-                    />
-                </div>
+                <Image
+                    src="/imagenes/maria.jpg"
+                    alt="María Lorena"
+                    width={928}
+                    height={1152}
+                    sizes="(max-width: 768px) 100vw, 672px"
+                    quality={80}
+                    className="w-full h-auto"
+                />
 
                 <div className="p-6 md:p-8">
                     {/* Nombre y descripción */}
